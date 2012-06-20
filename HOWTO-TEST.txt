@@ -1,0 +1,13 @@
+(1)To use a REST operation provided by the EnvironmentManagerRessource:
+   Examples:
+   (a) Test createEnvironment(String environmentTemplateDescriptor)
+      curl -X POST -d @{URL-of-XML-EnvironmentTemplate} -H "Content-Type: application/xml" http://{hostname}:{port}/COPaaS-API-Jersey/environment
+
+   (b) Test startsEnvironment(String envid)
+      curl -X POST http://{hostname}:{port}/COPaaS-API-Jersey/environment/1/action/start
+
+(2)To use a REST operation provided by the EnvironmentManagerRessource:
+   Example:
+   (a) Test createApplication(String cloudApplicationDescriptor)
+      curl -X POST -d @{URL-of-XML-CloudAppDescriptor} -H "Content-Type: application/xml" http://{hostname}:{port}/COPaaS-API-Jersey/app
+
