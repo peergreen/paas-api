@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.it.sudparis.eu.ejb.client;
+package org.ow2.jonas.jpaas.ejb.client;
 
 import java.util.Hashtable;
 

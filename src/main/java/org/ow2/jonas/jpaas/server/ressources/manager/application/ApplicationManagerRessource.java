@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.it.sudparis.eu.server.ressources.manager.application;
+package org.ow2.jonas.jpaas.server.ressources.manager.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.it.sudparis.eu.ejb.client.ApplicationManagerClient;
-import org.it.sudparis.eu.server.ressources.exception.NotImplementedException;
 import org.ow2.jonas.jpaas.application.ApplicationManagerRemote;
+import org.ow2.jonas.jpaas.ejb.client.ApplicationManagerClient;
 import org.ow2.jonas.jpaas.manager.api.Application;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
+import org.ow2.jonas.jpaas.server.ressources.exception.NotImplementedException;
 
 /**
  * REST resource of type ApplicationManager

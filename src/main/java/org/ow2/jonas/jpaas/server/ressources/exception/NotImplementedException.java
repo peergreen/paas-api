@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.it.sudparis.eu.server.ressources.exception;
+package org.ow2.jonas.jpaas.server.ressources.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

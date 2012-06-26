@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.it.sudparis.eu.server.ressources.manager.environment;
+package org.ow2.jonas.jpaas.server.ressources.manager.environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.it.sudparis.eu.ejb.client.EnvironmentManagerClient;
-import org.it.sudparis.eu.server.ressources.exception.NotImplementedException;
+import org.ow2.jonas.jpaas.ejb.client.EnvironmentManagerClient;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerBeanException;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerRemote;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
 import org.ow2.jonas.jpaas.manager.api.Environment;
+import org.ow2.jonas.jpaas.server.ressources.exception.NotImplementedException;
 
 /**
  * REST resource of type EnvironmentManager
