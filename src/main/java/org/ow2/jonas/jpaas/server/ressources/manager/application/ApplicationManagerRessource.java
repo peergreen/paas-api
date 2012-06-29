@@ -14,7 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.ow2.jonas.jpaas.application.ApplicationManagerRemote;
+import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.ejb.client.ApplicationManagerClient;
 import org.ow2.jonas.jpaas.manager.api.Application;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
@@ -46,7 +46,7 @@ public class ApplicationManagerRessource {
 				+ cloudApplicationDescriptor
 				+ ") on the JPAAS-APPLICATION-MANAGER");
 		/* call the createApplication operation from the EJB */
-		ApplicationManagerRemote envManager = ApplicationManagerClient
+		ApplicationManager envManager = ApplicationManagerClient
 				.getProxy();
 		Application app = envManager
 				.createApplication(cloudApplicationDescriptor);
@@ -80,7 +80,7 @@ public class ApplicationManagerRessource {
 				+ applicationVersionDescriptor
 				+ ") on the JPAAS-APPLICATION-MANAGER");
 		/* call the createApplicationVersion operation from the EJB */
-		ApplicationManagerRemote envManager = ApplicationManagerClient
+		ApplicationManager envManager = ApplicationManagerClient
 				.getProxy();
 		ApplicationVersion appVer = envManager
 				.createApplicationVersion(applicationVersionDescriptor);
@@ -102,7 +102,7 @@ public class ApplicationManagerRessource {
 		.println("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
 		List<Application> listApp = new ArrayList<Application>();
 		/* call the findApplications operation from the EJB */
-		ApplicationManagerRemote envManager = ApplicationManagerClient
+		ApplicationManager envManager = ApplicationManagerClient
 				.getProxy();
 		listApp = envManager.findApplications();
 		throw new NotImplementedException();
@@ -124,7 +124,7 @@ public class ApplicationManagerRessource {
 				+ appid + ") on the JPAAS-APPLICATION-MANAGER");
 		List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
 		/* call the findApplicationVersions(appid) operation from the EJB */
-		ApplicationManagerRemote envManager = ApplicationManagerClient
+		ApplicationManager envManager = ApplicationManagerClient
 				.getProxy();
 		listAppVer = envManager.findApplicationVersion(appid);
 		throw new NotImplementedException();
@@ -153,7 +153,7 @@ public class ApplicationManagerRessource {
 				+ ") on the JPAAS-APPLICATION-MANAGER");
 		List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
 		/* call the findApplicationVersionInstances operation from the EJB */
-		ApplicationManagerRemote envManager = ApplicationManagerClient
+		ApplicationManager envManager = ApplicationManagerClient
 				.getProxy();
 		listAppVerInstances = envManager.findApplicationVersionsInstances(
 				appid, versionid);

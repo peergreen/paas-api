@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 
 import org.ow2.jonas.jpaas.ejb.client.EnvironmentManagerClient;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerBeanException;
-import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerRemote;
+import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
 import org.ow2.jonas.jpaas.manager.api.Environment;
 import org.ow2.jonas.jpaas.server.ressources.exception.NotImplementedException;
@@ -49,7 +49,7 @@ public class EnvironmentManagerRessource {
 		System.out
 		.println("[CO-PaaS-API]: Call createEnvironment(environmentTemplateDescriptor) on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the createEnvironment operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient.getProxy();
+		EnvironmentManager envManager = EnvironmentManagerClient.getProxy();
 		try {
 			Environment env = envManager
 					.createEnvironment(environmentTemplateDescriptor);
@@ -75,7 +75,7 @@ public class EnvironmentManagerRessource {
 		System.out.println("[CO-PaaS-API]: Call deleteEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the deleteEnvironment operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		envManager.deleteEnvironment(envid);
 		return Response.status(Response.Status.OK).build();
@@ -92,7 +92,7 @@ public class EnvironmentManagerRessource {
 		System.out
 		.println("[CO-PaaS-API]: Call findEnvironments() on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the findEnvironments operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		// TODO check the return type (Environment or String)
 		List<Environment> listEnv = new ArrayList<Environment>();
@@ -115,7 +115,7 @@ public class EnvironmentManagerRessource {
 		System.out.println("[CO-PaaS-API]: Call startsEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the startsEnvironment operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		Future<Environment> f = envManager.startEnvironment(envid);
 		// TODO ask Bull how to create Task from Future
@@ -165,7 +165,7 @@ public class EnvironmentManagerRessource {
 				+ "," + appid + "," + versionid + "," + instanceid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the deployApplication operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		envManager.deployApplication(envid, appid, versionid, instanceid);
 		return Response.status(Response.Status.OK).build();
@@ -196,7 +196,7 @@ public class EnvironmentManagerRessource {
 				+ "," + appid + "," + versionid + "," + instanceid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the undeployApplication operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		envManager.undeployApplication(envid, appid, versionid, instanceid);
 		return Response.status(Response.Status.OK).build();
@@ -216,7 +216,7 @@ public class EnvironmentManagerRessource {
 		System.out.println("[CO-PaaS-API]: Call getEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the getEnvironment operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		String envDesc = envManager.getEnvironment(envid).getEnvDesc();
 		return Response.status(Response.Status.OK).entity(envDesc).build();
@@ -238,7 +238,7 @@ public class EnvironmentManagerRessource {
 		.println("[CO-PaaS-API]: Call getDeployedApplicationVersionInstance("
 				+ envid + ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the getDeployedApplicationVersionInstance operation from the EJB */
-		EnvironmentManagerRemote envManager = EnvironmentManagerClient
+		EnvironmentManager envManager = EnvironmentManagerClient
 				.getProxy();
 		List<ApplicationVersionInstance> listInstances = envManager
 				.getDeployedApplicationVersionInstance(envid);

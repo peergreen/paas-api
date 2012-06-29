@@ -9,7 +9,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerRemote;
+import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
 
 
 
@@ -32,10 +32,10 @@ public class EnvironmentManagerClient {
 	 * 
 	 * @return the remote proxy
 	 */
-	public static EnvironmentManagerRemote getProxy() {
-		EnvironmentManagerRemote proxy = null;
+	public static EnvironmentManager getProxy() {
+		EnvironmentManager proxy = null;
 		try {
-			proxy = (EnvironmentManagerRemote) getInitialContext().lookup(
+			proxy = (EnvironmentManager) getInitialContext().lookup(
 					ejbName);
 		} catch (NamingException e) {
 			System.out.println("Cannot get Bean: " + e);

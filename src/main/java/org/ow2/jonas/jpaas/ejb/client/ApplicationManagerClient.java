@@ -9,7 +9,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.ow2.jonas.jpaas.application.ApplicationManagerRemote;
+import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 
 /**
  * ApplicationManagerClient is the client class used to invoke operations from
@@ -30,10 +30,10 @@ public class ApplicationManagerClient {
 	 * 
 	 * @return the remote proxy
 	 */
-	public static ApplicationManagerRemote getProxy() {
-		ApplicationManagerRemote proxy = null;
+	public static ApplicationManager getProxy() {
+		ApplicationManager proxy = null;
 		try {
-			proxy = (ApplicationManagerRemote) getInitialContext().lookup(
+			proxy = (ApplicationManager) getInitialContext().lookup(
 					ejbName);
 		} catch (NamingException e) {
 			System.out.println("Cannot get Bean: " + e);

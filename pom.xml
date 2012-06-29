@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.jonas.jpaas.jpaas-environment-manager</groupId>
-			<artifactId>environment-manager-api</artifactId>
+			<artifactId>environment-manager-ejb</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

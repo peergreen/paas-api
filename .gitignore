@@ -28,3 +28,6 @@ local.properties
 #target Folder
 target/
 /pom.xml
+
+.idea/
+*.iml
