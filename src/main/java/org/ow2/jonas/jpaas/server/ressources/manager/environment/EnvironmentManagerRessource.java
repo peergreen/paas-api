@@ -265,8 +265,20 @@ public class EnvironmentManagerRessource {
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the getEnvironment operation from the EJB */
 		EnvironmentManager envManager = EnvironmentManagerClient.getProxy();
-		String envDesc = envManager.getEnvironment(envid).getEnvDesc();
-		return Response.status(Response.Status.OK).entity(envDesc).build();
+		Environment env=envManager.getEnvironment(envid);
+		if (env!=null){
+			String envDesc = env.getEnvDesc();
+			return Response.status(Response.Status.OK).entity(envDesc).build();			
+		}
+		else{
+			System.out.println("Cannot find an environment with ID: " + envid);
+			Error error = new Error();
+			error.setValue("Cannot find an environment with ID: " + envid + ".");
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(error).build();
+		}
+		
+		
 	}
 
 	/**

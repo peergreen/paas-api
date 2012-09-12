@@ -24,16 +24,19 @@
  */
 package org.ow2.jonas.jpaas.server.xml;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
 
 /**
  * Error XML element
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Error {
 
-    @XmlValue
+	@XmlAttribute
     private String value;
 
     public String getValue() {
