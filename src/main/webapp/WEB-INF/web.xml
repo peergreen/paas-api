@@ -6,7 +6,7 @@
             <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
             <init-param>
     <param-name>com.sun.jersey.config.property.packages</param-name>
-    <param-value>org.ow2.jonas.jpaas.server.ressources.manager</param-value>
+    <param-value>org.ow2.jonas.jpaas.core.server.ressources.manager</param-value>
   </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
