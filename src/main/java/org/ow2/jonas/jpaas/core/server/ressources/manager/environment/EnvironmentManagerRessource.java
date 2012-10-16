@@ -135,7 +135,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * @throws EnvironmentManagerBeanException 
 	 */
 	@Override
-	public Response deleteEnvironment(@PathParam("envId") String envid) {
+	public Response deleteEnvironment(String envid) {
 		System.out.println("[CO-PaaS-API]: Call deleteEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the deleteEnvironment operation from the EJB */
@@ -179,7 +179,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response startEnvironment(@PathParam("envId") String envid) {
+	public Response startEnvironment(String envid) {
 		System.out.println("[CO-PaaS-API]: Call startsEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the startsEnvironment operation from the EJB */
@@ -195,7 +195,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response stopEnvironment(@PathParam("envId") String envid) {
+	public Response stopEnvironment(String envid) {
 		System.out.println("[CO-PaaS-API]: Call stopsEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		throw new NotImplementedException();
@@ -206,7 +206,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response deployApplication(@PathParam("envId") String envid,
+	public Response deployApplication(String envid,
 			@PathParam("appId") String appid,
 			@PathParam("versionId") String versionid,
 			@PathParam("instanceId") String instanceid) {
@@ -223,7 +223,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response undeployApplication(@PathParam("envId") String envid,
+	public Response undeployApplication(String envid,
 			@PathParam("appId") String appid,
 			@PathParam("versionId") String versionid,
 			@PathParam("instanceId") String instanceid) {
@@ -240,7 +240,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response getEnvironment(@PathParam("envId") String envid) {
+	public Response getEnvironment(String envid) {
 		System.out.println("[CO-PaaS-API]: Call getEnvironment(" + envid
 				+ ") on the JPAAS-ENVIRONMENT-MANAGER");
 		/* call the getEnvironment operation from the EJB */
