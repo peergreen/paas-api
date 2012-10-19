@@ -38,6 +38,7 @@ import org.ow2.jonas.jpaas.core.server.xml.TopologyXML;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManagerBeanException;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
+import org.ow2.jonas.jpaas.manager.api.Connector;
 import org.ow2.jonas.jpaas.manager.api.Deployable;
 import org.ow2.jonas.jpaas.manager.api.Environment;
 import org.ow2.jonas.jpaas.manager.api.Node;
@@ -481,7 +482,8 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 	 */
 	private RelationshipXML buildRelationShip(Relationship relation) {
 		RelationshipXML relationXML = new RelationshipXML();
-		relationXML.setRelationShipID(Integer.parseInt(relation.toString()));
+   // if (relation instanceof Connector)
+	//	relationXML.setRelationShipID(Integer.parseInt(((Connector) relation).getContainerId()));
 		// TODO Voir quels sont les attributs d'une relationShip
 		return relationXML;
 	}
