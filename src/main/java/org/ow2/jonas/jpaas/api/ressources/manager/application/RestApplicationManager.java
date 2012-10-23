@@ -42,7 +42,7 @@ public interface RestApplicationManager {
 	@Path("{appId}/version/create")
 	@Consumes("application/xml")
 	@Produces("application/xml")
-	Response createApplicationVersion(String applicationVersionDescriptor);
+	Response createApplicationVersion(@PathParam("appId") String appid, String applicationVersionDescriptor);
 
 	/**
 	 * TODO <br>
@@ -58,7 +58,8 @@ public interface RestApplicationManager {
 	@Path("{appId}/version/{versionId}/instance")
 	@Consumes("application/xml")
 	@Produces("application/xml")
-	Response createApplicationVersionInstance(@PathParam("appId") String appId,String applicationVersionInstanceDescriptor);
+	Response createApplicationVersionInstance(@PathParam("appId") String appid, @PathParam("versionId") String versionid,
+            String applicationVersionInstanceDescriptor);
 	
 	
 	/**
