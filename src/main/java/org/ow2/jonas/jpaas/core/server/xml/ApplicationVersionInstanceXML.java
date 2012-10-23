@@ -42,7 +42,7 @@ public class ApplicationVersionInstanceXML {
 	 * ApplicationVersionInstance state
 	 */
 	@XmlAttribute
-	private int state;
+	private String state;
 
 	/**
 	 * ApplicationVersionInstance target environment ID
@@ -117,11 +117,11 @@ public class ApplicationVersionInstanceXML {
 		this.instanceName = instanceName;
 	}
 
-	public int getState() {
+	public String getState() {
 		return state;
 	}
 
-	public void setState(int state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 

@@ -10,6 +10,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ApplicationVersionXML {
 	
 	/**
+	 * Application id
+	 */
+	@XmlAttribute
+	private String appId;
+	
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+
+	/**
 	 * Application Version id
 	 */
 	@XmlAttribute

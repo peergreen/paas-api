@@ -345,7 +345,7 @@ public class EnvironmentManagerRessource implements RestEnvironmentManager {
 		app.setInstanceName(applicationVersionInstance.getInstanceName());
 		app.setRequirements(applicationVersionInstance.getRequirements());
 		app.setSortedDeployabesLis(sortedDeployabesLis);
-		app.setState(applicationVersionInstance.getState());
+		app.setState(applicationVersionInstance.getStateStr());
 		app.setTargetEnvId(applicationVersionInstance.getTargetEnvId());
 		app.setUrlList(applicationVersionInstance.getUrlList());
 		app.setVersionID(applicationVersionInstance.getVersionId());

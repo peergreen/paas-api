@@ -5,6 +5,8 @@ package org.ow2.jonas.jpaas.core.server.ressources.manager.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,7 +18,6 @@ import org.ow2.jonas.jpaas.api.ressources.manager.application.RestApplicationMan
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManagerBeanException;
 import org.ow2.jonas.jpaas.core.ejb.client.ApplicationManagerClient;
-import org.ow2.jonas.jpaas.core.server.ressources.exception.NotImplementedException;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionInstanceXML;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionXML;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationXML;
@@ -24,7 +25,6 @@ import org.ow2.jonas.jpaas.manager.api.Application;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
 import org.ow2.jonas.jpaas.core.server.xml.Error;
-
 
 
 
@@ -123,27 +123,48 @@ public class ApplicationManagerRessource implements RestApplicationManager {
 				.println("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
 		List<Application> listApp = new ArrayList<Application>();
 		/* call the findApplications operation from the EJB */
-		ApplicationManager envManager = ApplicationManagerClient.getProxy();
-		listApp = envManager.findApplications();
-		throw new NotImplementedException();
-		// TODO return Response.status(Response.Status.OK).entity(new
-		// GenericEntity<List<Application>>(listApp){}).build();
+		ApplicationManager appManager = ApplicationManagerClient.getProxy();
+		listApp = appManager.findApplications();
+		
+		
+		List<ApplicationXML> listAppsXML = new ArrayList<ApplicationXML>();
+
+		if (listApp != null) {
+			for (Application app : listApp) {
+				ApplicationXML appXML = buildApplication(app);
+				if (appXML != null) {
+					listAppsXML.add(appXML);
+				}
+			}
+		}
+		return Response.status(Response.Status.OK)
+				.entity(new GenericEntity<List<ApplicationXML>>(listAppsXML) {
+				}).type(MediaType.APPLICATION_XML_TYPE).build();
+		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Response findApplicationVersions(@PathParam("appId") String appid) {
 		System.out.println("[CO-PaaS-API]: Call findApplicationVersions("
 				+ appid + ") on the JPAAS-APPLICATION-MANAGER");
 		List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
 		/* call the findApplicationVersions(appid) operation from the EJB */
-		ApplicationManager envManager = ApplicationManagerClient.getProxy();
-		listAppVer = envManager.findApplicationVersion(appid);
-		throw new NotImplementedException();
-		// TODO return Response.status(Response.Status.OK).entity(new
-		// GenericEntity<List<ApplicationVersion>>(listAppVer){}).build();
+		ApplicationManager appManager = ApplicationManagerClient.getProxy();
+		listAppVer = appManager.findApplicationVersion(appid);
+		List<ApplicationVersionXML> listAppVersionsXML = new ArrayList<ApplicationVersionXML>();
+
+		if (listAppVer != null) {
+			for (ApplicationVersion appVersion : listAppVer) {
+				ApplicationVersionXML appVersionXML = buildApplicationVersion(appVersion);
+				if (appVersionXML != null) {
+					listAppVersionsXML.add(appVersionXML);
+				}
+			}
+		}
+		return Response.status(Response.Status.OK)
+				.entity(new GenericEntity<List<ApplicationVersionXML>>(listAppVersionsXML) {
+				}).type(MediaType.APPLICATION_XML_TYPE).build();
+		
 	}
 
 	/**
@@ -158,25 +179,65 @@ public class ApplicationManagerRessource implements RestApplicationManager {
 				+ ") on the JPAAS-APPLICATION-MANAGER");
 		List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
 		/* call the findApplicationVersionInstances operation from the EJB */
-		ApplicationManager envManager = ApplicationManagerClient.getProxy();
-		listAppVerInstances = envManager.findApplicationVersionsInstances(
+		ApplicationManager appManager = ApplicationManagerClient.getProxy();
+		listAppVerInstances = appManager.findApplicationVersionsInstances(
 				appid, versionid);
-		throw new NotImplementedException();
-		// TODO return Response.status(Response.Status.OK).entity(new
-		// GenericEntity<List<ApplicationVersionInstance>>(listAppVerInstances){}).build();
+		List<ApplicationVersionInstanceXML> listAppVersionInstancesXML = new ArrayList<ApplicationVersionInstanceXML>();
+
+		if (listAppVersionInstancesXML != null) {
+			for (ApplicationVersionInstance appVersionInstance : listAppVerInstances) {
+				ApplicationVersionInstanceXML appVersionInstanceXML = buildApplicationVersionInstance(appVersionInstance);
+				if (appVersionInstanceXML != null) {
+					listAppVersionInstancesXML.add(appVersionInstanceXML);
+				}
+			}
+		}
+		return Response.status(Response.Status.OK)
+				.entity(new GenericEntity<List<ApplicationVersionInstanceXML>>(listAppVersionInstancesXML) {
+				}).type(MediaType.APPLICATION_XML_TYPE).build();
+		
 	}
 
 	@Override
 	public Response startApplicationVersionInstance(String appid,
-			String versionid, String instanceid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			String versionId, String instanceId) {
+		
+		ApplicationManager appManager = ApplicationManagerClient.getProxy();
+
+		Future<ApplicationVersionInstance> instance = null;
+
+		try {
+			 instance = appManager.startApplicationVersionInstance(appid, versionId, instanceId);
+		} catch (ApplicationManagerBeanException e1) {
+			e1.printStackTrace();
+		}
+
+		ApplicationVersionInstanceXML appVersionInstanceXML=null;
+        try {
+	        appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
+        } catch (InterruptedException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        } catch (ExecutionException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
+		
+		return Response.status(Response.Status.OK)
+				.entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+		}
 
 	@Override
 	public Response describeApplication(String appId) {
-		// TODO Auto-generated method stub
-		return null;
+		ApplicationManager appManager = ApplicationManagerClient.getProxy();
+
+		Application app = null;
+		app = appManager.getApplication(appId);
+
+		ApplicationXML appXML = buildApplication(app);
+		
+		return Response.status(Response.Status.OK)
+				.entity(appXML).type(MediaType.APPLICATION_XML_TYPE).build();
 	}
 
 	@Override
@@ -229,6 +290,60 @@ public class ApplicationManagerRessource implements RestApplicationManager {
 					return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 							.entity(error).build();
 				}
+	}
+	
+	/**
+	 * builds the XML representation for an Application
+	 * 
+	 * @param env
+	 *            The {@link Application} object
+	 * @return an {@link Application} XML representation
+	 */
+	private ApplicationXML buildApplication(final Application app) {
+		ApplicationXML xmlApp = new ApplicationXML();
+		
+		xmlApp.setAppId(app.getAppId());
+		xmlApp.setAppName(app.getName());
+
+		return xmlApp;
+	}
+	
+	/**
+	 * builds the XML representation for an ApplicationVersion
+	 * 
+	 * @param env
+	 *            The {@link Application} object
+	 * @return an {@link Application} XML representation
+	 */
+	private ApplicationVersionXML buildApplicationVersion(final ApplicationVersion appVersion) {
+		ApplicationVersionXML xmlVersionApp = new ApplicationVersionXML();
+		
+		xmlVersionApp.setAppId(appVersion.getAppId());
+		xmlVersionApp.setAppVerId(appVersion.getVersionId());
+		xmlVersionApp.setAppVerLabel(appVersion.getVersionId());
+
+		return xmlVersionApp;
+	}
+
+	
+	/**
+	 * builds the XML representation for an ApplicationVersionInstance
+	 * 
+	 * @param env
+	 *            The {@link Application} object
+	 * @return an {@link Application} XML representation
+	 */
+	private ApplicationVersionInstanceXML buildApplicationVersionInstance(final ApplicationVersionInstance appVersionInstance) {
+		ApplicationVersionInstanceXML xmlInstanceVersionApp = new ApplicationVersionInstanceXML();
+		
+		xmlInstanceVersionApp.setAppId(appVersionInstance.getAppId());
+		xmlInstanceVersionApp.setVersionID(appVersionInstance.getVersionId());
+		xmlInstanceVersionApp.setInstanceId(appVersionInstance.getInstanceId());
+		xmlInstanceVersionApp.setInstanceName(appVersionInstance.getInstanceName());
+		xmlInstanceVersionApp.setState(appVersionInstance.getStateStr());
+
+		
+		return xmlInstanceVersionApp;
 	}
 
 }
