@@ -39,7 +39,7 @@ public interface RestApplicationManager {
 	 *         appID and Link element will be added to the Manifest.
 	 */
 	@POST
-	@Path("{appId}/version/create")
+	@Path("{appId}/version")
 	@Consumes("application/xml")
 	@Produces("application/xml")
 	Response createApplicationVersion(@PathParam("appId") String appid, String applicationVersionDescriptor);
@@ -105,12 +105,12 @@ public interface RestApplicationManager {
 	 *            The application's ID
 	 * @param versionid
 	 *            The application version's ID
-	 * @param instanceId
+	 * @param instanceid
 	 *            The application instance's ID	            
 	 * @return XML Task with TaskId
 	 */
 
-	@GET
+	@POST
 	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/start")
 	Response startApplicationVersionInstance(@PathParam("appId") String appid,
 			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
@@ -123,7 +123,7 @@ public interface RestApplicationManager {
 	 *            The application's ID
 	 * @param versionid
 	 *            The application version's ID
-	 * @param instanceId
+	 * @param instanceid
 	 *            The application instance's ID	            
 	 * @return \\TODO
 	 */
@@ -136,7 +136,7 @@ public interface RestApplicationManager {
 	 * Describe application.
 	 * Command: GET /app/{appId}
 	 * 
-	 * @param appid
+	 * @param appId
 	 *           The application's ID
 	 * @return XML file An: The Cloud Application Descriptor
 	 */
@@ -150,13 +150,13 @@ public interface RestApplicationManager {
 	 * Delete application. Removes all existing versions.
 	 * Command: DELETE /app/{appId}
 	 * 
-	 * @param appid
+	 * @param appId
 	 *           The application's ID
 	 * @return HTTP status
 	 */
 		
 	@DELETE
-	@Path("{appId}/delete")
+	@Path("{appId}")
 	@Produces("application/xml")
 	Response deleteApplication(@PathParam("appId") String appId);
 
@@ -168,7 +168,6 @@ public interface RestApplicationManager {
 	 */
 		
 	@DELETE
-	@Path("delete")
 	@Produces("application/xml")
 	Response deleteApplications();
 
@@ -180,7 +179,7 @@ public interface RestApplicationManager {
    	 *            The application's ID
    	 * @param versionid
    	 *            The application version's ID
-   	 * @param instanceId
+   	 * @param instanceid
    	 *            The application instance's ID
    	 * @return XML Task with TaskId
    	 */
@@ -198,7 +197,7 @@ public interface RestApplicationManager {
    	 *            The application's ID
    	 * @param versionid
    	 *            The application version's ID
-   	 * @param instanceId
+   	 * @param instanceid
    	 *            The application instance's ID
    	 * @return XML Task with TaskId
    	 */

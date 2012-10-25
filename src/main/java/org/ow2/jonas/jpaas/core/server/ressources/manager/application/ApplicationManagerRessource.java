@@ -359,6 +359,7 @@ public class ApplicationManagerRessource implements RestApplicationManager {
             appXml = loadXml(applicationVersionInstanceDescriptor);
             Element cloudApplicationNode = (Element) appXml.getElementsByTagName("cloud-application").item(0);
             Element deploymentNode = (Element) appXml.getElementsByTagName("deployment").item(0);
+            //Add the NameSpace to fix a bug
             cloudApplicationNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
                     "http://jonas.ow2.org/ns/cloud/application/1.0");
             deploymentNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
@@ -387,7 +388,7 @@ public class ApplicationManagerRessource implements RestApplicationManager {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         // TODO add the other application attributes
