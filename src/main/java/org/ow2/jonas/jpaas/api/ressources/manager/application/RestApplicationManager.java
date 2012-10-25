@@ -171,4 +171,40 @@ public interface RestApplicationManager {
 	@Path("delete")
 	@Produces("application/xml")
 	Response deleteApplications();
+
+    /**
+   	 * Scale up an application version instance Command: POST
+   	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
+   	 *
+   	 * @param appid
+   	 *            The application's ID
+   	 * @param versionid
+   	 *            The application version's ID
+   	 * @param instanceId
+   	 *            The application instance's ID
+   	 * @return XML Task with TaskId
+   	 */
+
+   	@POST
+   	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/scaleup")
+   	Response scaleUp(@PathParam("appId") String appid,
+   			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
+
+    /**
+   	 * Scale down an application version instance Command: POST
+   	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
+   	 *
+   	 * @param appid
+   	 *            The application's ID
+   	 * @param versionid
+   	 *            The application version's ID
+   	 * @param instanceId
+   	 *            The application instance's ID
+   	 * @return XML Task with TaskId
+   	 */
+
+   	@POST
+   	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/scaledown")
+   	Response scaleDown(@PathParam("appId") String appid,
+   			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
 }
