@@ -40,6 +40,12 @@
 	<version>6.0</version>
 </dependency>
 	</dependencies>
+  <scm>
+    <connection>scm:git:git://gitorious.ow2.org/ow2-jasmine/jpaas-api.git</connection>
+    <developerConnection>scm:git:git@gitorious.ow2.org:ow2-jasmine/jpaas-api.git</developerConnection>
+    <url>http://gitorious.ow2.org/ow2-jasmine/jpaas-api/trees/master</url>
+  </scm>
+
 	<build>
 		<finalName>jpaas-api</finalName>
 		<plugins>
