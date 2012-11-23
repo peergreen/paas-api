@@ -18,7 +18,7 @@ public class NodeXML {
 	 * Node Current size
 	 */
 	@XmlAttribute
-	private int nodeCureentSize;
+	private int nodeCurrentSize;
 
 	/**
 	 * Node ID
@@ -44,6 +44,12 @@ public class NodeXML {
 	@XmlAttribute
 	private String nodeName;
 
+  /**
+	 * Node type
+	 */
+	@XmlAttribute
+	private String nodeType;
+
 	/**
 	 * Default constructor
 	 */
@@ -51,12 +57,12 @@ public class NodeXML {
 
 	}
 
-	public int getNodeCureentSize() {
-		return nodeCureentSize;
+	public int getNodeCurrentSize() {
+		return nodeCurrentSize;
 	}
 
-	public void setNodeCureentSize(int nodeCureentSize) {
-		this.nodeCureentSize = nodeCureentSize;
+	public void setNodeCureentSize(int nodeCurrentSize) {
+		this.nodeCurrentSize = nodeCurrentSize;
 	}
 
 	public String getNodeID() {
@@ -90,5 +96,13 @@ public class NodeXML {
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
 	}
+
+  public String getNodeType() {
+    return nodeType;
+  }
+
+  public void setNodeType(String nodeType) {
+    this.nodeType = nodeType;
+  }
 
 }

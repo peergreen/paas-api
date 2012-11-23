@@ -15,6 +15,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RelationshipXML {
 	// TODO to be defined
 	/**
+	 * RelationShip Type
+	 */
+	@XmlAttribute
+	private String relationShipType;
+
+  /**
 	 * Node Current size
 	 */
 	@XmlAttribute
@@ -35,4 +41,11 @@ public class RelationshipXML {
 		this.relationShipID = relationShipID;
 	}
 
+  public String getRelationShipType() {
+    return relationShipType;
+  }
+
+  public void setRelationShipType(String relationShipType) {
+    this.relationShipType = relationShipType;
+  }
 }
