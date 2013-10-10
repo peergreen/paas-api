@@ -34,7 +34,10 @@
         <easybeans-osgi-version>1.2.4</easybeans-osgi-version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
+        <osgi-core.version>4.3.0</osgi-core.version>
         <ipojo.version>1.10.1</ipojo.version>
+        <application-manager.version>1.0.0-M2-SNAPSHOT</application-manager.version>
+        <environment-manager.version>1.0.0-M2-SNAPSHOT</environment-manager.version>
 
     </properties>
 

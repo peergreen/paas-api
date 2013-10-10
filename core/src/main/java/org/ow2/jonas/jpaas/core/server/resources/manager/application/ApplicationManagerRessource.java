@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.ow2.jonas.jpaas.core.server.ressources.manager.application;
+package org.ow2.jonas.jpaas.core.server.resources.manager.application;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -21,11 +21,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.ow2.jonas.jpaas.api.ressources.manager.application.RestApplicationManager;
+import org.ow2.jonas.jpaas.api.resources.manager.application.RestApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManagerBeanException;
 import org.ow2.jonas.jpaas.core.ejb.client.ApplicationManagerClient;
-import org.ow2.jonas.jpaas.core.server.ressources.exception.NotImplementedException;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionInstanceXML;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionXML;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationXML;

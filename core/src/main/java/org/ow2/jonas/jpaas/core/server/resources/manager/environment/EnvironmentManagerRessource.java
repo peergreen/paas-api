@@ -1,16 +1,16 @@
 /**
  *
  */
-package org.ow2.jonas.jpaas.core.server.ressources.manager.environment;
+package org.ow2.jonas.jpaas.core.server.resources.manager.environment;
 
-import org.ow2.jonas.jpaas.api.ressources.manager.environment.RestEnvironmentManager;
+import org.ow2.jonas.jpaas.api.resources.manager.environment.RestEnvironmentManager;
 import org.ow2.jonas.jpaas.api.task.ITask;
 import org.ow2.jonas.jpaas.api.task.IWorkTask;
 import org.ow2.jonas.jpaas.api.task.Status;
 import org.ow2.jonas.jpaas.api.task.TaskException;
 import org.ow2.jonas.jpaas.api.task.TaskPool;
 import org.ow2.jonas.jpaas.core.ejb.client.EnvironmentManagerClient;
-import org.ow2.jonas.jpaas.core.server.ressources.exception.NotImplementedException;
+import org.ow2.jonas.jpaas.core.server.resources.exception.NotImplementedException;
 import org.ow2.jonas.jpaas.core.server.task.CreateEnvironmentTask;
 import org.ow2.jonas.jpaas.core.server.task.WorkTask;
 import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionInstanceXML;

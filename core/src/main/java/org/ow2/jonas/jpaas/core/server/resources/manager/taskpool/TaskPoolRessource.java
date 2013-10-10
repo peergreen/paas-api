@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ow2.jonas.jpaas.core.server.ressources.manager.taskpool;
+package org.ow2.jonas.jpaas.core.server.resources.manager.taskpool;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.ow2.jonas.jpaas.api.ressources.manager.taskpool.RestTaskPool;
+import org.ow2.jonas.jpaas.api.resources.manager.taskpool.RestTaskPool;
 import org.ow2.jonas.jpaas.api.task.IWorkTask;
 import org.ow2.jonas.jpaas.api.task.Status;
 import org.ow2.jonas.jpaas.api.task.TaskPool;

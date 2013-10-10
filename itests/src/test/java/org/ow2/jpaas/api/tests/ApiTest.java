@@ -50,6 +50,22 @@ public class ApiTest {
         root.setLevel(Level.INFO);
 
         return options(systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+                /*mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "common").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-datasource").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-connector").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-jonas").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-jk").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-external-db").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-core").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-deployable-artefact").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-deployable-xml").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-core").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "deployment-core").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-application-manager", "application-manager-api").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-application-manager", "application-manager-mock").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-api").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-mock").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-manager-api", "jpaas-manager-api").version(PROJECT_VERSION), */
                 junitBundles());
     }
 
@@ -61,11 +77,16 @@ public class ApiTest {
         ArtifactProcessRequest artifactProcessRequest = new ArtifactProcessRequest(artifact);
         artifactProcessRequest.setDeploymentMode(DeploymentMode.DEPLOY);
         deploymentService.process(Collections.singleton(artifactProcessRequest));
+        System.out.println("War deployment in progress ....");
+        Thread.sleep(3000);
+        System.out.println("Deployment ok");
 
     }
 
     @Test
     public void checkInjectContext() {
+        System.out.println("checkInjectContext ....");
+
         try {
             Thread.sleep(300000);
         } catch (InterruptedException e) {

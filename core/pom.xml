@@ -20,6 +20,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>${osgi-core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ow2.spec.ee</groupId>
             <artifactId>ow2-ejb-3.1-spec</artifactId>
             <version>${ow2-spec.version}</version>
@@ -49,15 +55,13 @@
         </dependency>
         <dependency>
             <groupId>org.ow2.jonas.jpaas.jpaas-environment-manager</groupId>
-            <artifactId>environment-manager-ejb</artifactId>
-            <version>1.0.0-M1</version>
-            <scope>provided</scope>
+            <artifactId>environment-manager-api</artifactId>
+            <version>${environment-manager.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.jonas.jpaas.jpaas-application-manager</groupId>
-            <artifactId>application-manager-ejb</artifactId>
-            <version>1.0.0-M1</version>
-            <scope>provided</scope>
+            <artifactId>application-manager-api</artifactId>
+            <version>${application-manager.version}</version>
         </dependency>
 
     </dependencies>

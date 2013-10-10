@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.api.ressources.manager.environment;
+package org.ow2.jonas.jpaas.api.resources.manager.environment;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

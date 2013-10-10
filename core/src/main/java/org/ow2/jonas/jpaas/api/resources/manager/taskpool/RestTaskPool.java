@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.api.ressources.manager.taskpool;
+package org.ow2.jonas.jpaas.api.resources.manager.taskpool;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;

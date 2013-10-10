@@ -9,6 +9,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 
 /**
@@ -20,24 +23,71 @@ import org.ow2.jonas.jpaas.application.api.ApplicationManager;
  */
 public class ApplicationManagerClient {
 
+    /*
 	final private static String contextFactory = "org.objectweb.carol.jndi.spi.MultiOrbInitialContextFactory";
 	final private static String providerURL = "rmi://localhost:1099";
 	final private static String ejbName = "ApplicationManagerBean";
+	*/
 
-	/**
-	 * Search the remote interface of the EnvironmentManagerBean in the JNDI
-	 * server and retrieves its proxy.
-	 * 
-	 * @return the remote proxy
-	 */
-	public static ApplicationManager getProxy() {
-		ApplicationManager proxy = null;
-		try {
-			proxy = (ApplicationManager) getInitialContext().lookup(ejbName);
-		} catch (NamingException e) {
-			System.out.println("Cannot get Bean: " + e);
-		}
-		return proxy;
+
+    private static ApplicationManagerClient singleton;
+    private  ApplicationManager applicationManagerService;
+
+
+    public ApplicationManagerClient() {
+
+        Context initialContext = null;
+        Hashtable<String, Object> env = new Hashtable<String, Object>();
+        //env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
+        //env.put(Context.PROVIDER_URL, providerURL);
+
+        try {
+            initialContext = new InitialContext(env);
+        } catch (NamingException e) {
+            System.out.println("Cannot get InitialContext: " + e);
+        }
+
+
+        try {
+            BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
+            ServiceReference serviceReference = bundleContext.getServiceReference(ApplicationManager.class.getName());
+            Object service = bundleContext.getService(serviceReference);
+            if (service instanceof ApplicationManager) {
+                applicationManagerService = (ApplicationManager) service;
+            }
+        } catch (NamingException e) {
+            System.out.println("Cannot get InitialContext: " + e);
+        }
+    }
+
+
+    private  ApplicationManager getService() {
+        return applicationManagerService;
+    }
+
+
+    /**
+     * Search the remote interface of the EnvironmentManagerBean in the JNDI
+     * server and retrieves its proxy.
+     *
+     * @return the remote proxy
+     */
+
+    public static ApplicationManager getProxy() {
+       /* ApplicationManager proxy = null;
+
+        try {
+            proxy = (ApplicationManager) getInitialContext().lookup(ejbName);
+        } catch (NamingException e) {
+            System.out.println("Cannot get Bean: " + e);
+        }
+        return proxy;*/
+
+
+        if (singleton == null) {
+            singleton = new  ApplicationManagerClient();
+        }
+        return singleton.getService();
 
 	}
 
@@ -47,6 +97,7 @@ public class ApplicationManagerClient {
 	 * 
 	 * @return a naming Context
 	 */
+    /*
 	static Context getInitialContext() {
 		Context initialContext = null;
 		Hashtable<String, Object> env = new Hashtable<String, Object>();
@@ -61,5 +112,6 @@ public class ApplicationManagerClient {
 		return initialContext;
 
 	}
+	*/
 
 }

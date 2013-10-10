@@ -1,22 +1,19 @@
-package org.ow2.jonas.jpaas.core.server.ressources;
+package org.ow2.jonas.jpaas.core.server.resources;
 
 
-import org.ow2.jonas.jpaas.core.server.ressources.manager.application.ApplicationManagerRessource;
-import org.ow2.jonas.jpaas.core.server.ressources.manager.environment.EnvironmentManagerRessource;
-import org.ow2.jonas.jpaas.core.server.ressources.manager.taskpool.TaskPoolRessource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.application.ApplicationManagerRessource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.environment.EnvironmentManagerRessource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.taskpool.TaskPoolRessource;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("/api")
 public class ApiApplication extends Application {
-
-    public static EntityManager entityManager;
 
     @PostConstruct
     protected void postConstruct() {

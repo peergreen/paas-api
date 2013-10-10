@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ow2.jonas.jpaas.core.server.ressources.exception;
+package org.ow2.jonas.jpaas.core.server.resources.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
