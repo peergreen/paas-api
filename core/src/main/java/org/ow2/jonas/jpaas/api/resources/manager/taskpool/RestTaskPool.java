@@ -37,7 +37,7 @@ public interface RestTaskPool {
 	/**
 	 * Cancel a Task
 	 * 
-	 * @param taskId
+	 * @param taskid
 	 *            Id of the task to cancel
 	 * 
 	 */

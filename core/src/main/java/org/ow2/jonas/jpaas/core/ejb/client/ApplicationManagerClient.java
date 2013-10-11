@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 
@@ -49,13 +50,14 @@ public class ApplicationManagerClient {
 
 
         try {
-            BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
+            BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
+            //BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
             ServiceReference serviceReference = bundleContext.getServiceReference(ApplicationManager.class.getName());
             Object service = bundleContext.getService(serviceReference);
             if (service instanceof ApplicationManager) {
                 applicationManagerService = (ApplicationManager) service;
             }
-        } catch (NamingException e) {
+        } catch (Exception e) {
             System.out.println("Cannot get InitialContext: " + e);
         }
     }

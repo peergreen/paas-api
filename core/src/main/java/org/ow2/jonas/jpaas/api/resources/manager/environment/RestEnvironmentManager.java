@@ -37,7 +37,7 @@ public interface RestEnvironmentManager {
 	 */
 	@DELETE
 	@Path("{envId}")
-	public abstract Response deleteEnvironment(@PathParam("envId") String envid);
+	Response deleteEnvironment(@PathParam("envId") String envid);
 
 	/**
 	 * Finds the list of the available environments <br>
@@ -47,7 +47,7 @@ public interface RestEnvironmentManager {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public abstract Response findEnvironments();
+	Response findEnvironments();
 
 	/**
 	 * Starts an environment <br>
@@ -58,7 +58,7 @@ public interface RestEnvironmentManager {
 	 */
 	@POST
 	@Path("{envId}/action/start")
-	public abstract Response startEnvironment(@PathParam("envId") String envid);
+	Response startEnvironment(@PathParam("envId") String envid);
 
 	/**
 	 * Stops an environment <br>
@@ -69,7 +69,7 @@ public interface RestEnvironmentManager {
 	 */
 	@POST
 	@Path("{envId}/action/stop")
-	public abstract Response stopEnvironment(@PathParam("envId") String envid);
+	Response stopEnvironment(@PathParam("envId") String envid);
 
 	/**
 	 * Deploys an application instance on an available environment <br>
@@ -88,7 +88,7 @@ public interface RestEnvironmentManager {
 	 */
 	@POST
 	@Path("{envId}/action/deploy/app/{appId}/version/{versionId}/instance/{instanceId}")
-	public abstract Response deployApplication(
+	Response deployApplication(
 			@PathParam("envId") String envid, @PathParam("appId") String appid,
 			@PathParam("versionId") String versionid,
 			@PathParam("instanceId") String instanceid);
@@ -110,7 +110,7 @@ public interface RestEnvironmentManager {
 	 */
 	@POST
 	@Path("{envId}/action/undeploy/app/{appId}/version/{versionId}/instance/{instanceId}")
-	public abstract Response undeployApplication(
+	Response undeployApplication(
 			@PathParam("envId") String envid, @PathParam("appId") String appid,
 			@PathParam("versionId") String versionid,
 			@PathParam("instanceId") String instanceid);
@@ -125,7 +125,7 @@ public interface RestEnvironmentManager {
 	 */
 	@GET
 	@Path("{envId}")
-	public abstract Response getEnvironment(@PathParam("envId") String envid);
+	Response getEnvironment(@PathParam("envId") String envid);
 
 	/**
 	 * List the deployed application instances in an environment <br>
@@ -137,7 +137,7 @@ public interface RestEnvironmentManager {
 	 */
 	@GET
 	@Path("{envId}/app/")
-	public abstract Response getDeployedApplicationVersionInstance(
+	Response getDeployedApplicationVersionInstance(
 			@PathParam("envId") String envid);
 
 }

@@ -28,7 +28,7 @@ import org.ow2.jonas.jpaas.core.server.xml.TaskXML;
  * 
  */
 @Path("task")
-public class TaskPoolRessource implements RestTaskPool {
+public class TaskPoolResource implements RestTaskPool {
 	private TaskPool taskPool;
 
 	/**

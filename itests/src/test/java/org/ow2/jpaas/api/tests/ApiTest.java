@@ -50,7 +50,8 @@ public class ApiTest {
         root.setLevel(Level.INFO);
 
         return options(systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-                /*mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "common").version(PROJECT_VERSION),
+                mavenBundle("org.ow2.util.bundles", "jaxb2-ri-2.2.5").version("1.0.0"),
+                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "common").version(PROJECT_VERSION),
                 mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-datasource").version(PROJECT_VERSION),
                 mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-connector").version(PROJECT_VERSION),
                 mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-jonas").version(PROJECT_VERSION),
@@ -65,7 +66,7 @@ public class ApiTest {
                 mavenBundle("org.ow2.jonas.jpaas.jpaas-application-manager", "application-manager-mock").version(PROJECT_VERSION),
                 mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-api").version(PROJECT_VERSION),
                 mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-mock").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-manager-api", "jpaas-manager-api").version(PROJECT_VERSION), */
+                mavenBundle("org.ow2.jonas.jpaas.jpaas-manager-api", "jpaas-manager-api").version(PROJECT_VERSION),
                 junitBundles());
     }
 
@@ -94,33 +95,6 @@ public class ApiTest {
         }
         assertNotNull(context);
     }
-
-
-
-   /* @Test
-    public void checkInjectNamingManager() {
-        assertNotNull(namingManager);
-    }
-
-    @Test
-    public void checkBundleNamingManager() {
-        Boolean found = false;
-        Boolean active = false;
-        Bundle[] bundles = context.getBundles();
-        for (Bundle bundle : bundles) {
-            if (bundle != null) {
-                if (bundle.getSymbolicName().equals("org.ow2.jonas.jpaas.naming-manager.ejb")) {
-                    found = true;
-                    if (bundle.getState() == Bundle.ACTIVE) {
-                        active = true;
-                    }
-                }
-            }
-        }
-        assertTrue(found);
-        assertTrue(active);
-    }*/
-
 
 
 }

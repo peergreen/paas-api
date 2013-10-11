@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  *
  */
 @Path("app")
-public class ApplicationManagerRessource implements RestApplicationManager {
+public class ApplicationManagerResource implements RestApplicationManager {
 
     /**
      * An element to display Errors

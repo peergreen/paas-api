@@ -10,6 +10,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
@@ -47,13 +48,15 @@ public class EnvironmentManagerClient {
 
 
         try {
-            BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
+            BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
+
+            //BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
             ServiceReference serviceReference = bundleContext.getServiceReference(EnvironmentManager.class.getName());
             Object service = bundleContext.getService(serviceReference);
             if (service instanceof EnvironmentManager) {
                 environmentManagerService = (EnvironmentManager) service;
             }
-        } catch (NamingException e) {
+        } catch (Exception e) {
             System.out.println("Cannot get InitialContext: " + e);
         }
     }

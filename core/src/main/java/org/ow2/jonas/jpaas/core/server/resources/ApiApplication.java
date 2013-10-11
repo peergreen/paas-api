@@ -1,9 +1,9 @@
 package org.ow2.jonas.jpaas.core.server.resources;
 
 
-import org.ow2.jonas.jpaas.core.server.resources.manager.application.ApplicationManagerRessource;
-import org.ow2.jonas.jpaas.core.server.resources.manager.environment.EnvironmentManagerRessource;
-import org.ow2.jonas.jpaas.core.server.resources.manager.taskpool.TaskPoolRessource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.application.ApplicationManagerResource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.environment.EnvironmentManagerResource;
+import org.ow2.jonas.jpaas.core.server.resources.manager.taskpool.TaskPoolResource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +24,9 @@ public class ApiApplication extends Application {
     public Set<Object> getSingletons() {
         Set<Object> set = new HashSet<>();
 
-        set.add(new ApplicationManagerRessource());
-        set.add(new EnvironmentManagerRessource());
-        set.add(new TaskPoolRessource());
+        set.add(new ApplicationManagerResource());
+        set.add(new EnvironmentManagerResource());
+        set.add(new TaskPoolResource());
 
         return set;
     }

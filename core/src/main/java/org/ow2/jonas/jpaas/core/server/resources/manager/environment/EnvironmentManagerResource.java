@@ -54,7 +54,7 @@ import java.util.concurrent.Future;
  * @author Mohamed Sellami (Telecom SudParis)
  */
 @Path("environment")
-public class EnvironmentManagerRessource implements RestEnvironmentManager {
+public class EnvironmentManagerResource implements RestEnvironmentManager {
 
   /**
    * The used HTTP Port
