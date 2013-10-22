@@ -17,6 +17,7 @@
     <manager.version>1.0.0-M1-SNAPSHOT</manager.version>
     <application-manager.version>1.0.0-M1-SNAPSHOT</application-manager.version>
     <environment-manager.version>1.0.0-M1-SNAPSHOT</environment-manager.version>
+    <paas-util.version>1.0.0-M1-SNAPSHOT</paas-util.version>
   </properties>
 
   <modules>
