@@ -42,23 +42,29 @@ public class ApplicationManagerClient {
         //env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
         //env.put(Context.PROVIDER_URL, providerURL);
 
+        /*
         try {
+
             initialContext = new InitialContext(env);
         } catch (NamingException e) {
             System.out.println("Cannot get InitialContext: " + e);
         }
+        */
 
 
         try {
-            BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
+            BundleContext bundleContext = FrameworkUtil.getBundle(ApplicationManager.class).getBundleContext();
+            //BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
             //BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
             ServiceReference serviceReference = bundleContext.getServiceReference(ApplicationManager.class.getName());
             Object service = bundleContext.getService(serviceReference);
             if (service instanceof ApplicationManager) {
                 applicationManagerService = (ApplicationManager) service;
             }
+            System.out.println("service: " + applicationManagerService);
+
         } catch (Exception e) {
-            System.out.println("Cannot get InitialContext: " + e);
+            System.out.println("error: " + e);
         }
     }
 

@@ -40,11 +40,13 @@ public class EnvironmentManagerClient {
         //env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
         //env.put(Context.PROVIDER_URL, providerURL);
 
+        /*
         try {
             initialContext = new InitialContext(env);
         } catch (NamingException e) {
             System.out.println("Cannot get InitialContext: " + e);
         }
+        */
 
 
         try {
@@ -56,8 +58,10 @@ public class EnvironmentManagerClient {
             if (service instanceof EnvironmentManager) {
                 environmentManagerService = (EnvironmentManager) service;
             }
+            System.out.println("service: " + environmentManagerService);
+
         } catch (Exception e) {
-            System.out.println("Cannot get InitialContext: " + e);
+            System.out.println("Error: " + e);
         }
     }
 
