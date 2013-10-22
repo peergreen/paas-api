@@ -1,60 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <groupId>org.ow2</groupId>
-        <artifactId>ow2</artifactId>
-        <version>1.3</version>
-        <relativePath/>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.ow2.jonas.jpaas.jpaas-api</groupId>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>com.peergreen.paas</groupId>
+    <artifactId>paas-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>paas-api-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0-M1-SNAPSHOT</version>
 
-    <artifactId>jpaas-api</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0-M2-SNAPSHOT</version>
+  <name>PG PaaS :: API</name>
 
-    <name>jPaaS :: API</name>
+  <properties>
+    <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
+    <manager.version>1.0.0-M1-SNAPSHOT</manager.version>
+    <application-manager.version>1.0.0-M1-SNAPSHOT</application-manager.version>
+    <environment-manager.version>1.0.0-M1-SNAPSHOT</environment-manager.version>
+  </properties>
 
-    <description>jPaaS : API</description>
+  <modules>
+    <module>core</module>
+    <module>itests</module>
+  </modules>
 
-    <url>http://wiki.jasmine.ow2.org/</url>
+  <scm>
+    <connection>scm:git:https://forge.peergreen.com/git/git/paas/paas-api.git</connection>
+    <developerConnection>scm:git:https://forge.peergreen.com/git/git/paas/paas-api.git</developerConnection>
+    <url>https://forge.peergreen.com/git/summary/?r=paas/paas-api.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-
-    <properties>
-        <ow2-bundles.version>1.0.32</ow2-bundles.version>
-        <jdk.version>1.7</jdk.version>
-        <ow2-spec.version>1.0.13</ow2-spec.version>
-        <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-        <easybeans-osgi-version>1.2.4</easybeans-osgi-version>
-        <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
-        <maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
-        <osgi-core.version>4.3.0</osgi-core.version>
-        <ipojo.version>1.10.1</ipojo.version>
-        <application-manager.version>1.0.0-M2-SNAPSHOT</application-manager.version>
-        <environment-manager.version>1.0.0-M2-SNAPSHOT</environment-manager.version>
-
-    </properties>
-
-
-    <dependencies>
-
-    </dependencies>
-    <scm>
-        <connection>scm:git:https://forge.peergreen.com/git/git/jpaas/jpaas-api.git</connection>
-        <developerConnection>scm:git:https://forge.peergreen.com/git/git/jpaas/jpaas-api.git</developerConnection>
-        <url>https://forge.peergreen.com/git/summary/?r=jpaas/jpaas-api.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <modules>
-        <module>core</module>
-        <module>itests</module>
-    </modules>
+  <repositories>
+    <repository>
+      <id>peergreen.release</id>
+      <name>Peergreen Release Nexus</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <url>https://forge.peergreen.com/nexus/content/repositories/releases/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
 
 </project>

@@ -27,7 +27,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 @ExamReactorStrategy(PerClass.class)
 public class ApiTest {
 
-    public static final String PROJECT_VERSION = "1.0.0-M2-SNAPSHOT";
+    public static final String PROJECT_VERSION = "1.0.0-M1-SNAPSHOT";
 
     @Inject
     BundleContext context;
@@ -51,29 +51,29 @@ public class ApiTest {
 
         return options(systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 mavenBundle("org.ow2.util.bundles", "jaxb2-ri-2.2.5").version("1.0.0"),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "common").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-datasource").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-topology-connector").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-jonas").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-jk").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-node-template-external-db").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "environment-template-core").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-deployable-artefact").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-deployable-xml").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "cloud-application-core").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.util.cloud-desc", "deployment-core").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-application-manager", "application-manager-api").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-application-manager", "application-manager-mock").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-api").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-environment-manager", "environment-manager-mock").version(PROJECT_VERSION),
-                mavenBundle("org.ow2.jonas.jpaas.jpaas-manager-api", "jpaas-manager-api").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-common").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-topology-datasource").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-topology-connector").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-node-template-jonas").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-node-template-jk").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-node-template-external-db").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-environment-template-core").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-cloud-application-deployable-artefact").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-cloud-application-deployable-xml").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-cloud-application-core").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-util-cloud-descriptors-deployment-core").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-application-manager-api").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-application-manager-mock").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-environment-manager-api").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-environment-manager-mock").version(PROJECT_VERSION),
+                mavenBundle("com.peergreen.paas", "paas-manager-api").version(PROJECT_VERSION),
                 junitBundles());
     }
 
     @Before
     public void deployWar() throws Exception {
         // M2 URI of ow2 util file
-        this.mvnURIWar = new URI("mvn:org.ow2.jonas.jpaas.jpaas-api/jpaas-api-core/" + PROJECT_VERSION + "/war");
+        this.mvnURIWar = new URI("mvn:com.peergreen.paas/paas-api/" + PROJECT_VERSION + "/war");
         this.artifact = artifactBuilder.build("myappli.war", mvnURIWar);
         ArtifactProcessRequest artifactProcessRequest = new ArtifactProcessRequest(artifact);
         artifactProcessRequest.setDeploymentMode(DeploymentMode.DEPLOY);

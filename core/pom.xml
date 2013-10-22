@@ -1,91 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>jpaas-api</artifactId>
-        <groupId>org.ow2.jonas.jpaas.jpaas-api</groupId>
-        <version>1.0.0-M2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>paas-api-parent</artifactId>
+    <groupId>com.peergreen.paas</groupId>
+    <version>1.0.0-M1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jpaas-api-core</artifactId>
+  <artifactId>paas-api</artifactId>
 
-    <packaging>war</packaging>
-    <version>1.0.0-M2-SNAPSHOT</version>
+  <packaging>war</packaging>
 
-    <name>jPaaS :: API :: Core</name>
+  <name>PG PaaS :: API :: Core</name>
 
-    <description>jPaaS : API :: Core</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>${osgi-core.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.spec.ee</groupId>
+      <artifactId>ow2-ejb-3.1-spec</artifactId>
+      <version>${ow2-spec.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.spec.ee</groupId>
+      <artifactId>ow2-annotation-1.1-spec</artifactId>
+      <version>${ow2-spec.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
+    </dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>${osgi-core.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.spec.ee</groupId>
-            <artifactId>ow2-ejb-3.1-spec</artifactId>
-            <version>${ow2-spec.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.spec.ee</groupId>
-            <artifactId>ow2-annotation-1.1-spec</artifactId>
-            <version>${ow2-spec.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.ow2.spec.ee</groupId>
+      <artifactId>ow2-connector-1.6-spec</artifactId>
+      <version>${ow2-spec.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.peergreen.paas</groupId>
+      <artifactId>paas-manager-api</artifactId>
+      <version>${manager.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.peergreen.paas</groupId>
+      <artifactId>paas-environment-manager-api</artifactId>
+      <version>${environment-manager.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.peergreen.paas</groupId>
+      <artifactId>paas-application-manager-api</artifactId>
+      <version>${application-manager.version}</version>
+    </dependency>
+  </dependencies>
 
-        <dependency>
-            <groupId>org.ow2.spec.ee</groupId>
-            <artifactId>ow2-connector-1.6-spec</artifactId>
-            <version>${ow2-spec.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.jonas.jpaas.jpaas-manager-api</groupId>
-            <artifactId>jpaas-manager-api</artifactId>
-            <version>1.0.0-M1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.jonas.jpaas.jpaas-environment-manager</groupId>
-            <artifactId>environment-manager-api</artifactId>
-            <version>${environment-manager.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.jonas.jpaas.jpaas-application-manager</groupId>
-            <artifactId>application-manager-api</artifactId>
-            <version>${application-manager.version}</version>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <finalName>jpaas-api</finalName>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.plugin.version}</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
