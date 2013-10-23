@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<environment-template xmlns="http://jonas.ow2.org/ns/cloud/environment/1.0"
+             xmlns:jk="http://jonas.ow2.org/ns/cloud/node-template/paas/router/jk/1.0"                                   
+             xmlns:jonas="http://jonas.ow2.org/ns/cloud/node-template/paas/container/jonas/1.0"                                   
+             xmlns:connector="http://jonas.ow2.org/ns/cloud/topology/relationship-template/connector/1.0"                                                                      
+             xmlns:external-db="http://jonas.ow2.org/ns/cloud/node-template/paas/database/external-db/1.0"                                   
+             xmlns:datasource="http://jonas.ow2.org/ns/cloud/topology/relationship-template/datasource/1.0">   
+             
+   <!-- application instance information -->
+   <name>testenv</name>
+   <description>My Env for testing</description>
+
+   <!-- 
+        Multitenancy level among
+        -SharedHardware : shared hardware / isolated VM 
+        -SharedVm : shared VM / isolated JVM
+        -SharedJvm : shared JVM / isolated application
+        -SharedApp : shared application 
+     -->
+   <multitenancy-level>SharedHardware</multitenancy-level>
+
+   <!-- 
+       Topology description
+            node-templates enable to describe a complex platform, ie. with several tiers.
+            node-template may consist in platform or infrastructure resources 
+            relationship-template modelizes binding between nodes
+     -->
+   <topology-template>
+
+      <!-- 
+          Router : Apache / Jk
+       -->
+      <jk:node-template type="router" name="router-test" id="rw1">
+         <jk:configuration>
+            <jk:jk-ref>apacheJk</jk:jk-ref> <!-- points to a catalog entry -->
+         </jk:configuration>
+
+         <jk:sla-enforcement> 
+            <jk:health />
+            <jk:elasticity min="1" max="1" />
+         </jk:sla-enforcement>
+
+      </jk:node-template>
+      
+      <!-- 
+          Container : JOnAS
+       -->
+      <jonas:node-template type="container" name="jonas-test" id="jw1">
+
+         <jonas:configuration>
+            <jonas:java-ref>openjdk-1.6</jonas:java-ref> <!-- points to a catalog entry -->
+            <jonas:java-options></jonas:java-options>
+            <jonas:jonas-ref>jonas-full-5_3_0-M7</jonas:jonas-ref> <!-- points to a catalog entry -->
+            <!-- in the future, the configuration description would be supported with a deployme format -->
+         </jonas:configuration>
+
+         <jonas:sla-enforcement> 
+            <jonas:health>
+               <!-- Definition business and/or platform indicators to monitor the platform health -->
+               <jonas:jmx-indicator>jmx1</jonas:jmx-indicator>
+            </jonas:health>
+           
+            <jonas:elasticity min="1" max="5">
+               <!-- session enabled, replication or persistence requirements -->   
+               <jonas:session persistence="false" replication="false"/>
+
+               <!-- if replica may be collocated or not -->   
+               <jonas:aversion />
+
+               <!-- configure indicators to monitor and rules to trigger scaleup / scaledown -->
+               <jonas:scaling-rules>
+                  <jonas:throughput>
+                     <!-- mbeans used to retrieve rate -->
+                     <jonas:jmx-indicator></jonas:jmx-indicator>
+                     <!-- threshold definition triggering scaleup/scaledown -->
+                     <jonas:scaleup-threshold>11</jonas:scaleup-threshold>
+                     <jonas:scaledown-threshold>9</jonas:scaledown-threshold>
+                  </jonas:throughput>
+                  <jonas:response-time>
+                     <!-- mbeans used to retrieve response time -->
+                     <jonas:jmx-indicator></jonas:jmx-indicator>
+                     <!-- threshold definition triggering scaleup/scaledown -->
+                     <jonas:scaleup-threshold></jonas:scaleup-threshold>
+                     <jonas:scaledown-threshold></jonas:scaledown-threshold>
+                  </jonas:response-time>
+		 </jonas:scaling-rules>
+            </jonas:elasticity>
+         </jonas:sla-enforcement>
+      </jonas:node-template>
+
+      <!-- 
+          Relationship : connector  
+        -->
+      <connector:relationship-template name="connector-wicketoo" id="cw1">
+         <connector:router id="rw1"/>
+         <connector:container id="jw1"/>
+         <connector:configuration/>
+      </connector:relationship-template>
+      
+         
+      <!-- Database : external database 
+           External database means database not manged by JPaaS, eg. hosted in another cloud
+        -->
+      <!--<external-db:node-template type="database" name="mydb1" id="n3">
+         <external-db:configuration>
+            <external-db:driver-location>http://jdbc.postgresql.org/download/postgresql-9.1-901.jdbc4.jar</external-db:driver-location>
+            <external-db:url>url</external-db:url>
+            <external-db:classname>classname</external-db:classname>
+            <external-db:user>user</external-db:user>
+            <external-db:pwd>password</external-db:pwd>
+         </external-db:configuration>
+      </external-db:node-template>
+      -->      
+ 
+      <!-- 
+          Relationship : data source  
+        -->
+      <!--<datasource:relationship-template name="container2database" id="r2">
+         <datasource:container id="n2"/>
+         <datasource:database id="n3"/>
+         <datasource:configuration>
+            <datasource:jndi>jdbc_1</datasource:jndi>
+         </datasource:configuration>
+      </datasource:relationship-template>
+      -->
+   </topology-template>
+  
+</environment-template>

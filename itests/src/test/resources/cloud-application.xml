@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<cloud-application xmlns="http://jonas.ow2.org/ns/cloud/application/1.0"
+                   xmlns:artefact="http://jonas.ow2.org/ns/cloud/deployable/artefact/1.0"
+                   xmlns:embedded-xml="http://jonas.ow2.org/ns/cloud/deployable/xml/1.0">
+     
+   <!-- 
+       Application description
+     -->
+   <name>testapp</name>
+   <description>Test app</description>   
+   
+   <!-- 
+        Global requirements of the application - expressed in a LDAP query syntax.
+        
+        For example, requirement can describe the expected multitenancy level 
+        - SharedHardware : shared hardware / isolated VM 
+        - SharedVm : shared VM / isolated JVM
+        - SharedJvm : shared JVM / isolated application
+        - SharedApp : shared application 
+     -->
+   <requirements>
+      <requirement>(multitenancy-level=SharedHardware)</requirement>
+   </requirements>
+
+   <!-- 
+        Capabilities offered by the application. 
+        May be used to provide information about the service published by the application itself
+        Format is maven like '<propertyname>value</propertyname>'     
+
+        Not supported in V1   
+     -->
+   <capabilities> 
+      <application>com.peergreen.test</application>
+      <service>test</service>
+   </capabilities>
+
+</cloud-application>

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ow2.jonas.jpaas.core.server.xml;
+package org.ow2.jonas.jpaas.api.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
-import org.ow2.jonas.jpaas.core.server.xml.adapter.HashMapTest2.MapEntry;
+import org.ow2.jonas.jpaas.api.xml.adapter.HashMapTest2.MapEntry;
 
 /**
  * @author sellami
@@ -27,12 +27,12 @@ import org.ow2.jonas.jpaas.core.server.xml.adapter.HashMapTest2.MapEntry;
 @XmlRootElement(name = "root")
 @XmlAccessorType(XmlAccessType.FIELD)
 
-public class RessourcesXML {
+public class ResourcesXML {
 
 	public Map<String, Integer> map = new HashMap<String, Integer>();
 	
 
-    public RessourcesXML(Map<String, Integer> map) {
+    public ResourcesXML(Map<String, Integer> map) {
 		this.map = new HashMap<String, Integer>();
 		this.map.putAll(map);
 	}

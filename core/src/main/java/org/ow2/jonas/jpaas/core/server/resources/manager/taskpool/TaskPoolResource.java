@@ -17,9 +17,9 @@ import org.ow2.jonas.jpaas.api.resources.manager.taskpool.RestTaskPool;
 import org.ow2.jonas.jpaas.api.task.IWorkTask;
 import org.ow2.jonas.jpaas.api.task.Status;
 import org.ow2.jonas.jpaas.api.task.TaskPool;
-import org.ow2.jonas.jpaas.core.server.xml.Error;
-import org.ow2.jonas.jpaas.core.server.xml.Link;
-import org.ow2.jonas.jpaas.core.server.xml.TaskXML;
+import org.ow2.jonas.jpaas.api.xml.Error;
+import org.ow2.jonas.jpaas.api.xml.Link;
+import org.ow2.jonas.jpaas.api.xml.TaskXML;
 
 /**
  * REST resource of type TaskPool

@@ -208,6 +208,14 @@
             <version>${manager.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.peergreen.paas</groupId>
+            <artifactId>api-xml</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

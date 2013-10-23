@@ -15,9 +15,9 @@
  * limitations under the License.
  * 
  * $Id:$
- */ 
+ */
 
-package org.ow2.jonas.jpaas.core.server.xml;
+package org.ow2.jonas.jpaas.api.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,20 +25,49 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Error XML element
+ * Link XML element
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Error {
+public class Link {
 
 	@XmlAttribute
-	private String value;
+	private String rel;
 
-	public String getValue() {
-		return value;
+	@XmlAttribute
+	private String type;
+
+	@XmlAttribute
+	private String href;
+
+	public String getRel() {
+		return rel;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public String getType() {
+		return type;
 	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setRel(final String rel) {
+		this.rel = rel;
+	}
+
+	public void setHref(final String href) {
+		this.href = href;
+	}
+
+	public void setType(final String type) {
+		this.type = type;
+	}
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+      return prefix + "Link[rel=" + rel + ", type=" + type + ", href=" +href +"]" + "\\n";
+    }
 }

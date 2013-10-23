@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ow2.jonas.jpaas.core.server.xml;
+package org.ow2.jonas.jpaas.api.xml;
 
 /**
  * @author sellami
@@ -96,4 +96,17 @@ public class TaskXML {
 	public void setLink(List<Link> link) {
 		this.link = link;
 	}
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Task[id=" + id + ", status=" + status + ", startTime=" + startTime + ", endTime=" + endTime + "\\n" ;
+        for (Link myLink :  link)    {
+              msg += myLink.toString(prefix + "   ") + "\\n";
+        }
+
+        msg += "\\n";
+        return msg;
+    }
 }

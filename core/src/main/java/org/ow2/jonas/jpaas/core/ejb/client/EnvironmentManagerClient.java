@@ -50,8 +50,8 @@ public class EnvironmentManagerClient {
 
 
         try {
-            BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
-
+            BundleContext bundleContext = FrameworkUtil.getBundle(EnvironmentManager.class).getBundleContext();
+             //BundleContext bundleContext = FrameworkUtil.getBundle(BundleContext.class).getBundleContext();
             //BundleContext bundleContext = (BundleContext) initialContext.lookup("java:comp/BundleContext");
             ServiceReference serviceReference = bundleContext.getServiceReference(EnvironmentManager.class.getName());
             Object service = bundleContext.getService(serviceReference);

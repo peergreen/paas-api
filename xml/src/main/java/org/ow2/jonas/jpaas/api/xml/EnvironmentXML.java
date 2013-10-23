@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.core.server.xml;
+package org.ow2.jonas.jpaas.api.xml;
 
 import java.util.List;
 

@@ -25,13 +25,13 @@ import org.ow2.jonas.jpaas.api.resources.manager.application.RestApplicationMana
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManagerBeanException;
 import org.ow2.jonas.jpaas.core.ejb.client.ApplicationManagerClient;
-import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionInstanceXML;
-import org.ow2.jonas.jpaas.core.server.xml.ApplicationVersionXML;
-import org.ow2.jonas.jpaas.core.server.xml.ApplicationXML;
+import org.ow2.jonas.jpaas.api.xml.ApplicationVersionInstanceXML;
+import org.ow2.jonas.jpaas.api.xml.ApplicationVersionXML;
+import org.ow2.jonas.jpaas.api.xml.ApplicationXML;
 import org.ow2.jonas.jpaas.manager.api.Application;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
-import org.ow2.jonas.jpaas.core.server.xml.Error;
+import org.ow2.jonas.jpaas.api.xml.Error;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -65,10 +65,10 @@ public class ApplicationManagerResource implements RestApplicationManager {
                 + cloudApplicationDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplication operation from the EJB */
-        ApplicationManager envManager = ApplicationManagerClient.getProxy();
+        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         Application app = null;
         try {
-            app = envManager.createApplication(cloudApplicationDescriptor);
+            app = appManager.createApplication(cloudApplicationDescriptor);
 
         } catch (ApplicationManagerBeanException e) {
             // TODO Auto-generated catch block
@@ -101,10 +101,10 @@ public class ApplicationManagerResource implements RestApplicationManager {
                 + applicationVersionDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplicationVersion operation from the EJB */
-        ApplicationManager envManager = ApplicationManagerClient.getProxy();
+        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         ApplicationVersion appVer=null;
         try {
-            appVer = envManager
+            appVer = appManager
                     .createApplicationVersion(applicationVersionDescriptor);
         } catch (ApplicationManagerBeanException e) {
             // TODO Auto-generated catch block

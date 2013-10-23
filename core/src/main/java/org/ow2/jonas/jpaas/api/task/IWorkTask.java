@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.resource.spi.work.Work;
 
-import org.ow2.jonas.jpaas.core.server.xml.Link;
+import org.ow2.jonas.jpaas.api.xml.Link;
 
 /**
  * Represent a Work task

@@ -45,12 +45,21 @@
       <artifactId>ow2-connector-1.6-spec</artifactId>
       <version>${ow2-spec.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.peergreen.paas</groupId>
-      <artifactId>paas-manager-api</artifactId>
-      <version>${manager.version}</version>
+      <artifactId>api-xml</artifactId>
+      <version>${project.version}</version>
     </dependency>
-    <dependency>
+
+      <dependency>
+          <groupId>com.peergreen.paas</groupId>
+          <artifactId>paas-manager-api</artifactId>
+          <version>${manager.version}</version>
+      </dependency>
+
+
+      <dependency>
       <groupId>com.peergreen.paas</groupId>
       <artifactId>paas-environment-manager-api</artifactId>
       <version>${environment-manager.version}</version>

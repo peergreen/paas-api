@@ -25,7 +25,7 @@ import java.util.List;
 import org.ow2.jonas.jpaas.api.task.ITask;
 import org.ow2.jonas.jpaas.api.task.IWorkTask;
 import org.ow2.jonas.jpaas.api.task.Status;
-import org.ow2.jonas.jpaas.core.server.xml.Link;
+import org.ow2.jonas.jpaas.api.xml.Link;
 
 /**
  * Work task

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<cloud-application-version-instance-deployment>
+
+<cloud-application xmlns="http://jonas.ow2.org/ns/cloud/application/1.0"
+                   xmlns:artefact="http://jonas.ow2.org/ns/cloud/deployable/artefact/1.0"
+                   xmlns:embedded-xml="http://jonas.ow2.org/ns/cloud/deployable/xml/1.0">
+
+   <name>testapp</name>
+   <description>Test app</description>   
+
+   <version>7.0.0-SNAPSHOT</version>
+
+   <instance>test-for-demo</instance>
+
+   <requirements>
+      <requirement>(multitenancy-level=SharedHardware)</requirement>
+   </requirements>
+
+   <capabilities>
+      <application>com.peergreen.test</application>
+      <service>test</service>
+   </capabilities>
+
+   <deployables>
+
+      <artefact:deployable name="postgresql-8.4-703.jdbc4.jar" id="driver-wicketoo">
+         <artefact:location>http://10.197.180.20:8080/1/wicketoo/7.0.0-SNAPSHOT/wicketoo-for-demo/postgresql-8.4-703.jdbc4.jar</artefact:location>
+         <artefact:requirements/>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+      <artefact:deployable name="jdbc-ds-wicketoo.xml" id="ds-wicketoo">
+         <artefact:location>http://10.197.180.20:8080/1/wicketoo/7.0.0-SNAPSHOT/wicketoo-for-demo/jdbc-ds-wicketoo.xml</artefact:location>
+         <artefact:requirements/>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+      <artefact:deployable name="wicketoo-ear-7.0.0-SNAPSHOT.ear" id="ear-wicketoo">
+         <artefact:location>http://10.197.180.20:8080/1/wicketoo/7.0.0-SNAPSHOT/wicketoo-for-demo/wicketoo-ear-7.0.0-SNAPSHOT.ear</artefact:location>
+         <artefact:requirements>
+            <artefact:requirement>(specification=javaee5)</artefact:requirement>
+         </artefact:requirements>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+   </deployables>
+
+</cloud-application>
+	
+<deployment xmlns="http://jonas.ow2.org/ns/cloud/deployment/1.0">   
+             
+   <application>wicketoo-for-demo</application>
+
+   <environment>Env-Wicketoo</environment>
+
+   <deployment-map>
+      <entry deployable="driver-wicketoo" node="jw1"/>
+      <entry deployable="ds-wicketoo" node="jw1"/>
+      <entry deployable="ear-wicketoo" node="jw1"/>
+   </deployment-map>
+  
+</deployment>
+
+</cloud-application-version-instance-deployment>

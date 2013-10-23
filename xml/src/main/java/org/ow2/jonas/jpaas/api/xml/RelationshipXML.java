@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.core.server.xml;
+package org.ow2.jonas.jpaas.api.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

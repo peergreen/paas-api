@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<cloud-application xmlns="http://jonas.ow2.org/ns/cloud/application/1.0"
+                   xmlns:artefact="http://jonas.ow2.org/ns/cloud/deployable/artefact/1.0"
+                   xmlns:embedded-xml="http://jonas.ow2.org/ns/cloud/deployable/xml/1.0">
+     
+   <!-- 
+       Application description
+     -->
+   <name>testapp</name>
+   <description>Test app</description>   
+
+   <!-- 
+       Version Label
+     -->
+   <version>7.0.0-SNAPSHOT</version>
+   
+   <!-- 
+        Global requirements of the application - expressed in a LDAP query syntax.
+        
+        For example, requirement can describe the expected multitenancy level 
+        - SharedHardware : shared hardware / isolated VM 
+        - SharedVm : shared VM / isolated JVM
+        - SharedJvm : shared JVM / isolated application
+        - SharedApp : shared application 
+     -->
+   <requirements>
+      <requirement>(multitenancy-level=SharedHardware)</requirement>
+   </requirements>
+
+   <!-- 
+        Capabilities offered by the application. 
+        May be used to provide information about the service published by the application itself
+        Format is maven like '<propertyname>value</propertyname>'     
+
+        Not supported in V1   
+     -->
+   <capabilities> 
+      <application>com.peergreen.test</application>
+      <service>test</service>
+   </capabilities>
+   
+   <!-- 
+        List of deployables
+           The deployable sequence is sorted and describes to the loading order (at least for those that are collocated)  
+
+	Type of deployable
+           - JOnAS deployable (artefact or xml)
+           - Apache deployable (static pages extracted from an artefact url)
+           - DB deployable (artefact url including some sql scripts ?)
+           - JVM deployable (jvm options and properties)
+           - VM deployable (env variables definition)
+	
+        Requirements can be set for each deployable, each one in a query ldap format.
+
+        SLA enforcement (health & elasticity configuration) can be set for each deployable.
+        To note that SLA enforcement can be set both at platform layer (environment) and application layer (here).
+
+        For V1, 
+        - Only JOnAS deployable are supported.
+        - Requirements are not checked
+        - SLA enforcement configuration is not supported
+     -->
+   <deployables>
+
+      <!--
+          Artefact : bundle, jdbc driver
+        -->
+      <artefact:deployable name="postgresql-8.4-703.jdbc4.jar">
+         <artefact:requirements/>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+      <!--
+          Artefact : XML datasource
+        -->
+      <artefact:deployable name="jdbc-ds-wicketoo.xml">
+         <artefact:requirements/>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+      <!--
+          Artefact : ear
+        -->
+      <artefact:deployable name="wicketoo-ear-7.0.0-SNAPSHOT.ear">
+         <artefact:requirements>
+            <artefact:requirement>(specification=javaee5)</artefact:requirement>
+         </artefact:requirements>
+         <artefact:sla-enforcement/>
+      </artefact:deployable>
+
+           
+   </deployables>
+
+</cloud-application>
