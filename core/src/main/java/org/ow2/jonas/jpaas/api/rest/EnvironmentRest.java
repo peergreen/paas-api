@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.api.resources.manager.environment;
+package org.ow2.jonas.jpaas.api.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("environment")
-public interface RestEnvironmentManager {
+public interface EnvironmentRest {
 
 	// Environment management REST Operations
 	/**
@@ -20,7 +20,7 @@ public interface RestEnvironmentManager {
 	 * 
 	 * @param environmentTemplateDescriptor
 	 *            An environment template descriptor must be provided.
-	 * @return An enriched environment template descriptor. The envID and Link
+	 * @return An enriched environment template descriptor. The envID and LinkXML
 	 *         element will be added to the descriptor
 	 */
 	@POST

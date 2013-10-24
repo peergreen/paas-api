@@ -33,6 +33,12 @@
       <version>${ow2-spec.version}</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.ow2.bundles</groupId>
+          <artifactId>ow2-util-log</artifactId>
+          <version>${ow2-bundles.version}</version>
+          <scope>provided</scope>
+      </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>

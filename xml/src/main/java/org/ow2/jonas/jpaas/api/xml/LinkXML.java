@@ -25,11 +25,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Link XML element
+ * LinkXML XML element
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Link {
+public class LinkXML {
 
 	@XmlAttribute
 	private String rel;
@@ -68,6 +68,6 @@ public class Link {
         return toString("");
     }
     public String toString(String prefix) {
-      return prefix + "Link[rel=" + rel + ", type=" + type + ", href=" +href +"]" + "\\n";
+      return prefix + "Link[rel=" + rel + ", type=" + type + ", href=" +href +"]" + "\n";
     }
 }

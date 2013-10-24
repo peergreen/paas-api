@@ -1,4 +1,4 @@
-package org.ow2.jonas.jpaas.api.resources.manager.application;
+package org.ow2.jonas.jpaas.api.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Path("app")
-public interface RestApplicationManager {
+public interface ApplicationRest {
 
 	/**
 	 * Creates a new application. If the application is multitenant, it will be
@@ -19,7 +19,7 @@ public interface RestApplicationManager {
 	 * @param cloudApplicationDescriptor
 	 *            A Cloud Application Descriptor (manifest) must be provided.
 	 * @return XML file An: enriched Cloud Application Descriptor (manifest).
-	 *         The appID and Link element will be added to the Manifest.
+	 *         The appID and LinkXML element will be added to the Manifest.
 	 */
 	@POST
 	@Consumes("application/xml")
@@ -36,7 +36,7 @@ public interface RestApplicationManager {
 	 * @param applicationVersionDescriptor
 	 *            A Cloud Application Version Descriptor must be provided.
 	 * @return XML file An: enriched Cloud Application Version Descriptor. The
-	 *         appID and Link element will be added to the Manifest.
+	 *         appID and LinkXML element will be added to the Manifest.
 	 */
 	@POST
 	@Path("{appId}/version")

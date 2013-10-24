@@ -14,6 +14,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
+import org.ow2.util.log.Log;
+import org.ow2.util.log.LogFactory;
 
 /**
  * ApplicationManagerClient is the client class used to invoke operations from
@@ -23,6 +25,9 @@ import org.ow2.jonas.jpaas.environment.manager.api.EnvironmentManager;
  * 
  */
 public class EnvironmentManagerClient {
+
+    private Log logger = LogFactory.getLog(EnvironmentManagerClient.class);
+
 
 	/*
 	final private static String contextFactory = "org.objectweb.carol.jndi.spi.MultiOrbInitialContextFactory";
@@ -58,10 +63,9 @@ public class EnvironmentManagerClient {
             if (service instanceof EnvironmentManager) {
                 environmentManagerService = (EnvironmentManager) service;
             }
-            System.out.println("service: " + environmentManagerService);
 
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+            logger.error("Error: " + e);
         }
     }
 

@@ -206,8 +206,7 @@ public class ApiTest {
         System.out.println("envCreated = " + response.getEntity().toString());
 
         TaskXML task = response.readEntity(TaskXML.class);
-        System.out.println("task = " + task.getId());
-        System.out.println("task = " + task.getLink());
+        System.out.println("task = " + task);
 
         if (response.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
             fail("Status=" + response.getStatus());

@@ -21,27 +21,17 @@ package org.ow2.jonas.jpaas.api.task;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
-import javax.resource.spi.work.Work;
+import org.ow2.jonas.jpaas.api.xml.LinkXML;
+import org.ow2.jonas.jpaas.api.xml.OwnerXML;
 
-import org.ow2.jonas.jpaas.api.xml.Link;
-
-/**
- * Represent a Work task
- * 
- * @author Jeremy Cazaux
- */
-public interface IWorkTask extends Work {
+public interface Task {
 
 	/**
 	 * @return the Id of the task
 	 */
-	Long getId();
-
-	/**
-	 * @return the task
-	 */
-	ITask getTask();
+	String getId();
 
 	/**
 	 * @return the status of the task
@@ -50,9 +40,9 @@ public interface IWorkTask extends Work {
 
 	/**
 	 * @param status
-	 *            Update the status with the given value
+	 * Update the status with the given value
 	 */
-	void updateStatus(final Status status);
+	void setStatus(final Status status);
 
 	/**
 	 * @return the date which the execution of the task has been started
@@ -63,15 +53,19 @@ public interface IWorkTask extends Work {
 	 * @return the date that task has been executed
 	 */
 	Date getEndTime();
+    void setEndTime(Date time);
 
-	/**
-	 * @return the XML representation of the server
-	 */
-	String getEnvironmentXML();
+    /**
+     * @return the task name
+     */
+    String getName();
 
-	/**
-	 * @return the klink's list associated to a Task
-	 */
-	List<Link> getLinkList();
+    /**
+     * @return the related job
+     */
+    Future<?> getJob();
 
+    OwnerXML getOwner();
+
+    String getBaseUrl();
 }

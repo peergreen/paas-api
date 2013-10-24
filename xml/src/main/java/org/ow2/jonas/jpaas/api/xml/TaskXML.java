@@ -1,12 +1,5 @@
-/**
- * 
- */
-package org.ow2.jonas.jpaas.api.xml;
 
-/**
- * @author sellami
- *
- */
+package org.ow2.jonas.jpaas.api.xml;
 
 import java.util.Date;
 import java.util.List;
@@ -23,41 +16,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "task")
 public class TaskXML {
 
-	/**
-	 * Task id
-	 */
 	@XmlAttribute
-	private Long id;
+	private String id;
 
-	/**
-	 * Task status
-	 */
-	@XmlAttribute
+    @XmlAttribute
 	private String status;
 
-	/**
-     *
-     */
-	@XmlAttribute
+    @XmlAttribute
 	private Date startTime;
 
 	@XmlAttribute
 	private Date endTime;
 
-	// @XmlAttribute
-	// private String operationName;
+    @XmlAttribute
+    private String operationName;
 
-	@XmlElement
-	private List<Link> link;
+    @XmlElement
+    private List<LinkXML> link;
+
+    @XmlElement
+    private OwnerXML owner;
 
 	/**
 	 * Default constructor
 	 */
 	public TaskXML() {
-		// this.link = new ArrayList<Link>();
+		// this.link = new ArrayList<LinkXML>();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -73,7 +60,7 @@ public class TaskXML {
 		return endTime;
 	}
 
-	public void setId(final Long id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -89,24 +76,43 @@ public class TaskXML {
 		this.endTime = endTime;
 	}
 
-	public List<Link> getLink() {
+	public List<LinkXML> getLink() {
 		return link;
 	}
 
-	public void setLink(List<Link> link) {
+	public void setLink(List<LinkXML> link) {
 		this.link = link;
 	}
+
+    public String getOperationName() {
+        return operationName;
+    }
+
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
+    }
+
+    public OwnerXML getOwner() {
+        return owner;
+    }
+
+    public void setOwner(OwnerXML owner) {
+        this.owner = owner;
+    }
 
     public String toString() {
         return toString("");
     }
     public String toString(String prefix) {
-        String msg = prefix + "Task[id=" + id + ", status=" + status + ", startTime=" + startTime + ", endTime=" + endTime + "\\n" ;
-        for (Link myLink :  link)    {
-              msg += myLink.toString(prefix + "   ") + "\\n";
+        String msg = prefix + "Task[id=" + id + ", name=" + operationName + ", status=" + status + ", startTime=" + startTime + ", endTime=" + endTime + "\n" ;
+
+        msg += owner.toString(prefix + "   ") + "\n";
+        for (LinkXML myLink :  link)    {
+            msg += myLink.toString(prefix + "   ") + "\n";
         }
 
-        msg += "\\n";
+        msg += "\n";
+
         return msg;
     }
 }

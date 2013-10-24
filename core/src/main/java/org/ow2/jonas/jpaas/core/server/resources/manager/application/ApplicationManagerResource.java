@@ -21,17 +21,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.ow2.jonas.jpaas.api.resources.manager.application.RestApplicationManager;
+import org.ow2.jonas.jpaas.api.rest.ApplicationRest;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManagerBeanException;
 import org.ow2.jonas.jpaas.core.ejb.client.ApplicationManagerClient;
 import org.ow2.jonas.jpaas.api.xml.ApplicationVersionInstanceXML;
 import org.ow2.jonas.jpaas.api.xml.ApplicationVersionXML;
 import org.ow2.jonas.jpaas.api.xml.ApplicationXML;
-import org.ow2.jonas.jpaas.manager.api.Application;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
-import org.ow2.jonas.jpaas.api.xml.Error;
+import org.ow2.jonas.jpaas.api.xml.ErrorXML;
+import org.ow2.util.log.Log;
+import org.ow2.util.log.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -49,24 +50,27 @@ import org.xml.sax.SAXException;
  *
  */
 @Path("app")
-public class ApplicationManagerResource implements RestApplicationManager {
+public class ApplicationManagerResource implements ApplicationRest {
+
+    private Log logger = LogFactory.getLog(ApplicationManagerResource.class);
+
 
     /**
      * An element to display Errors
      */
-    private Error error = new Error();
+    private ErrorXML error = new ErrorXML();
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Response createApplication(String cloudApplicationDescriptor) {
-        System.out.println("[CO-PaaS-API]: Call createApplication("
+        logger.info("[CO-PaaS-API]: Call createApplication("
                 + cloudApplicationDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplication operation from the EJB */
         ApplicationManager appManager = ApplicationManagerClient.getProxy();
-        Application app = null;
+        org.ow2.jonas.jpaas.manager.api.Application app = null;
         try {
             app = appManager.createApplication(cloudApplicationDescriptor);
 
@@ -89,7 +93,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
                     .entity(error).build();
         }
         // TODO: Retrieve the object returned by the JPAAS-APPLICATION-MANAGER
-        // add the appID and Link element to the Manifest
+        // add the appID and LinkXML element to the Manifest
         // TODO: This will be a file created based on the new manifest
     }
 
@@ -97,7 +101,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
      * {@inheritDoc}
      */
     public Response createApplicationVersion(String appid, String applicationVersionDescriptor) {
-        System.out.println("[CO-PaaS-API]: Call createApplication("
+        logger.info("[CO-PaaS-API]: Call createApplication("
                 + applicationVersionDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplicationVersion operation from the EJB */
@@ -132,9 +136,8 @@ public class ApplicationManagerResource implements RestApplicationManager {
      */
     @Override
     public Response findApplications() {
-        System.out
-                .println("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
-        List<Application> listApp = new ArrayList<Application>();
+        logger.info("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
+        List<org.ow2.jonas.jpaas.manager.api.Application> listApp = new ArrayList<org.ow2.jonas.jpaas.manager.api.Application>();
         /* call the findApplications operation from the EJB */
         ApplicationManager appManager = ApplicationManagerClient.getProxy();
         listApp = appManager.findApplications();
@@ -143,7 +146,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
         List<ApplicationXML> listAppsXML = new ArrayList<ApplicationXML>();
 
         if (listApp != null) {
-            for (Application app : listApp) {
+            for (org.ow2.jonas.jpaas.manager.api.Application app : listApp) {
                 ApplicationXML appXML = buildApplication(app);
                 if (appXML != null) {
                     listAppsXML.add(appXML);
@@ -158,7 +161,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
 
     @Override
     public Response findApplicationVersions(@PathParam("appId") String appid) {
-        System.out.println("[CO-PaaS-API]: Call findApplicationVersions("
+        logger.info("[CO-PaaS-API]: Call findApplicationVersions("
                 + appid + ") on the JPAAS-APPLICATION-MANAGER");
         List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
         /* call the findApplicationVersions(appid) operation from the EJB */
@@ -187,7 +190,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
     public Response findApplicationVersionInstances(
             @PathParam("appId") String appid,
             @PathParam("versionId") String versionid) {
-        System.out.println("[CO-PaaS-API]: Call findApplicationVersions("
+        logger.info("[CO-PaaS-API]: Call findApplicationVersions("
                 + appid + "," + versionid
                 + ") on the JPAAS-APPLICATION-MANAGER");
         List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
@@ -244,7 +247,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
     public Response describeApplication(String appId) {
         ApplicationManager appManager = ApplicationManagerClient.getProxy();
 
-        Application app = null;
+        org.ow2.jonas.jpaas.manager.api.Application app = null;
         app = appManager.getApplication(appId);
 
         ApplicationXML appXML = buildApplication(app);
@@ -346,7 +349,7 @@ public class ApplicationManagerResource implements RestApplicationManager {
 
     public Response createApplicationVersionInstance(String appId, String versionid,
             String applicationVersionInstanceDescriptor) {
-        System.out.println("[CO-PaaS-API]: Call createApplicationVersionInstance("
+        logger.info("[CO-PaaS-API]: Call createApplicationVersionInstance("
                 + applicationVersionInstanceDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplicationVersionInstance operation from the EJB */
@@ -413,10 +416,10 @@ public class ApplicationManagerResource implements RestApplicationManager {
      * builds the XML representation for an Application
      *
      * @param app
-     *            The {@link Application} object
-     * @return an {@link Application} XML representation
+     *            The {@link org.ow2.jonas.jpaas.manager.api.Application} object
+     * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
-    private ApplicationXML buildApplication(final Application app) {
+    private ApplicationXML buildApplication(final org.ow2.jonas.jpaas.manager.api.Application app) {
         ApplicationXML xmlApp = new ApplicationXML();
 
         xmlApp.setAppId(app.getAppId());
@@ -429,8 +432,8 @@ public class ApplicationManagerResource implements RestApplicationManager {
      * builds the XML representation for an ApplicationVersion
      *
      * @param appVersion
-     *            The {@link Application} object
-     * @return an {@link Application} XML representation
+     *            The {@link org.ow2.jonas.jpaas.manager.api.Application} object
+     * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
     private ApplicationVersionXML buildApplicationVersion(final ApplicationVersion appVersion) {
         ApplicationVersionXML xmlVersionApp = new ApplicationVersionXML();
@@ -447,8 +450,8 @@ public class ApplicationManagerResource implements RestApplicationManager {
      * builds the XML representation for an ApplicationVersionInstance
      *
      * @param appVersionInstance
-     *            The {@link Application} object
-     * @return an {@link Application} XML representation
+     *            The {@link org.ow2.jonas.jpaas.manager.api.Application} object
+     * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
     private ApplicationVersionInstanceXML buildApplicationVersionInstance(final ApplicationVersionInstance appVersionInstance) {
         ApplicationVersionInstanceXML xmlInstanceVersionApp = new ApplicationVersionInstanceXML();

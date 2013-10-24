@@ -1,63 +1,84 @@
 package org.ow2.jonas.jpaas.core.server.task;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.ow2.jonas.jpaas.api.task.ITask;
-import org.ow2.jonas.jpaas.api.task.TaskException;
+import org.ow2.jonas.jpaas.api.task.Status;
+import org.ow2.jonas.jpaas.api.task.Task;
+import org.ow2.jonas.jpaas.api.xml.OwnerXML;
 import org.ow2.jonas.jpaas.manager.api.Environment;
 
-public class CreateEnvironmentTask implements ITask {
+import javax.ws.rs.core.MediaType;
 
-	private String environmentTemplateDescriptor;
+public class CreateEnvironmentTask extends AbstractTask implements Task {
 
-	private Future<Environment> environment;
+    private String environmentTemplateDescriptor;
 
-	public static final String TASK_NAME = "task:createEnvironment";
+    private Future<Environment> environment;
 
-	public CreateEnvironmentTask(String environmentTemplateDescriptor,
-			Future<Environment> environment) {
-		this.environmentTemplateDescriptor = environmentTemplateDescriptor;
-		this.environment = environment;
-	}
 
-	@Override
-	public void execute() throws TaskException {
-		// TODO Auto-generated method stub
+    public static final String TASK_NAME = "task:create-environment";
 
-	}
+    public CreateEnvironmentTask(String environmentTemplateDescriptor,
+                                 Future<Environment> environment, String baseUrl) {
+        super(TASK_NAME, baseUrl);
+        this.environmentTemplateDescriptor = environmentTemplateDescriptor;
+        this.environment = environment;
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        this.setStatus(Status.RUNNING);
+        TaskManager.getSingleton().registerTask(this);
 
-	@Override
-	public void preExecution() {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    public String getEnvironmentTemplateDescriptor() {
+        return environmentTemplateDescriptor;
+    }
 
-	@Override
-	public void postExecution() {
-		// TODO Auto-generated method stub
-	}
+    public void setEnvironmentTemplateDescriptor(
+            String environmentTemplateDescriptor) {
+        this.environmentTemplateDescriptor = environmentTemplateDescriptor;
+    }
 
-	public String getEnvironmentTemplateDescriptor() {
-		return environmentTemplateDescriptor;
-	}
+    public Future<Environment> getEnvironment() {
+        return environment;
+    }
 
-	public void setEnvironmentTemplateDescriptor(
-			String environmentTemplateDescriptor) {
-		this.environmentTemplateDescriptor = environmentTemplateDescriptor;
-	}
+    public void setEnvironment(Future<Environment> environment) {
+        this.environment = environment;
+    }
 
-	public Future<Environment> getEnvironment() {
-		return environment;
-	}
+    @Override
+    public Future<?> getJob() {
+        return getEnvironment();
+    }
 
-	public void setEnvironment(Future<Environment> environment) {
-		this.environment = environment;
-	}
+    @Override
+    public OwnerXML getOwner() {
+        OwnerXML owner = new OwnerXML();
 
+        Future<Environment> job = (Future<Environment>) this.getJob();
+        if (job.isDone()) {
+            Environment env = null;
+            try {
+                env = (Environment) job.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ExecutionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            owner.setName(env.getEnvName());
+            owner.setHref(getUrl(env.getEnvId()));
+            owner.setType(MediaType.APPLICATION_XML);
+        } else {
+            owner.setName("");
+            owner.setHref("");
+            owner.setType(MediaType.APPLICATION_XML);
+        }
+
+        return owner;
+    }
+
+    private String getUrl(String id) {
+        return this.baseUrl + "/environment/" + id;
+    }
 }
