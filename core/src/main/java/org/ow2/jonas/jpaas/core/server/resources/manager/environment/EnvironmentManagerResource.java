@@ -36,7 +36,6 @@ import java.util.concurrent.Future;
  *
  * @author Mohamed Sellami (Telecom SudParis)
  */
-@Path("environment")
 public class EnvironmentManagerResource implements EnvironmentRest {
 
     private Log logger = LogFactory.getLog(EnvironmentManagerResource.class);
@@ -183,20 +182,11 @@ public class EnvironmentManagerResource implements EnvironmentRest {
      */
     @Override
     public Response getEnvironment(String envid) {
-        logger.info("[CO-PaaS-API]: Call getEnvironment(" + envid
-                + ") on the JPAAS-ENVIRONMENT-MANAGER");
-    /* call the getEnvironment operation from the EJB */
-        org.ow2.jonas.jpaas.manager.api.Environment env = envManager.getEnvironment(envid);
-        if (env != null) {
-            String envDesc = env.getEnvDesc();
-            return Response.status(Response.Status.OK).entity(envDesc).build();
-        } else {
-            System.out.println("Cannot find an environment with ID: " + envid);
-            ErrorXML error = new ErrorXML();
-            error.setValue("Cannot find an environment with ID: " + envid + ".");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
-        }
+        logger.info("Get env: " + envid);
+        Environment env = envManager.getEnvironment(envid);
+        EnvironmentXML envXML = buildEnvironment(env);
+        return Response.status(Response.Status.OK)
+                .entity(envXML).type(MediaType.APPLICATION_XML_TYPE).build();
 
     }
 
@@ -476,6 +466,4 @@ public class EnvironmentManagerResource implements EnvironmentRest {
             nodeXML.setNodeType("Database");
         return nodeXML;
     }
-
-
 }

@@ -17,11 +17,9 @@ import org.ow2.util.log.Log;
 import org.ow2.util.log.LogFactory;
 
 
-@Path("task")
 public class TaskResource implements TaskRest {
 
     private Log logger = LogFactory.getLog(TaskResource.class);
-
 
     @Context
     private UriInfo uriInfo;
@@ -33,23 +31,19 @@ public class TaskResource implements TaskRest {
      * {@inheritDoc}
      */
     @Override
-    public Response getTask(@PathParam("taskid") String taskid) {
+    public Response getTask(String taskId) {
 
-        logger.info("[CO-PaaS-API]: Call getTask(" + taskid + ")");
+        logger.info(taskId);
 
-        TaskManager.getSingleton().clean();
-        TaskManager.getSingleton().refresh();
-
-
-        Task task = TaskManager.getSingleton().getTask(taskid);
+        Task task = TaskManager.getSingleton().getTask(taskId);
 
         if (task != null) {
             TaskXML taskXML = TaskManager.getSingleton().buildTaskXml(task);
             return Response.status(Response.Status.OK).entity(taskXML).build();
         } else {
-            logger.error("Cannot find a Task with ID: " + taskid);
+            logger.error("Cannot find a Task with ID: " + taskId);
             ErrorXML error = new ErrorXML();
-            error.setValue("Cannot find a Task with ID: " + taskid + ".");
+            error.setValue("Cannot find a Task with ID: " + taskId + ".");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
         }
@@ -60,11 +54,7 @@ public class TaskResource implements TaskRest {
      */
     @Override
     public Response getTasks() {
-        logger.info("[CO-PaaS-API]: Call getTasks()");
-
-        TaskManager.getSingleton().clean();
-        TaskManager.getSingleton().refresh();
-
+        logger.info("Retrieve all tasks");
 
         List<Task> listTask = TaskManager.getSingleton().getTasks();
         List<TaskXML> listTaskXML = new ArrayList<TaskXML>();
@@ -87,8 +77,8 @@ public class TaskResource implements TaskRest {
      * {@inheritDoc}
      */
     @Override
-    public Response cancelTask(@PathParam("taskid") final String taskid) {
-        Task task = TaskManager.getSingleton().getTask(taskid);
+    public Response cancelTask(final String taskId) {
+        Task task = TaskManager.getSingleton().getTask(taskId);
         if (task != null) {
 
             if (!task.getJob().isDone()) {
@@ -99,15 +89,11 @@ public class TaskResource implements TaskRest {
             return Response.status(Response.Status.OK).build();
         } else {
             ErrorXML error = new ErrorXML();
-            error.setValue("Task " + taskid + " not found.\n");
+            error.setValue("Task " + taskId + " not found.\n");
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
         }
 
     }
-
-
-
-
 }

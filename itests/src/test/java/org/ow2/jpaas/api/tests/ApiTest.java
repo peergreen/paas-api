@@ -153,6 +153,28 @@ public class ApiTest {
     }
 
     @Test
+    public void checkGetApplications() {
+        System.out.println("checkGetApplication ....");
+
+        ApplicationXML app = null;
+
+        try {
+            app = client.target(BASE_URL_API + "app/1" )
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationXML>() {
+                    });
+
+        } catch (WebApplicationException ex) {
+            fail("Status not found : " + Response.Status.NOT_FOUND);
+        }
+
+        System.out.println("result = " + app);
+        assertNotNull(app);
+        assertEquals(app.getAppId(), "1");
+        assertEquals(app.getAppName(), "myapp");
+    }
+
+    @Test
     public void checkCreateApplication() {
         System.out.println("checkCreateApplication ....");
 
@@ -206,13 +228,65 @@ public class ApiTest {
         System.out.println("envCreated = " + response.getEntity().toString());
 
         TaskXML task = response.readEntity(TaskXML.class);
-        System.out.println("task = " + task);
+        System.out.println("Task[1] = " + task);
 
         if (response.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
             fail("Status=" + response.getStatus());
         }
 
         assertNotNull(task);
+
+        boolean success = false;
+        if (task.getStatus().equals("SUCCESS")) {
+            success = true;
+        }
+       int retry = 2;
+        while (! success && retry < 10){
+            System.out.println("Waiting ending of creating env - retry = " + retry);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            String target = null;
+            try {
+                target = BASE_URL_API + "task/" + task.getId();
+                task = client.target(target)
+                        .request(MediaType.APPLICATION_XML)
+                        .get(new GenericType<TaskXML>() {
+                        });
+
+            } catch (WebApplicationException ex) {
+                fail("Exception : " + target + ", ex=" + ex);
+            }
+
+            System.out.println("Task[" + retry + "] = " + task);
+
+            assertNotNull(task);
+            if (task.getStatus().equals("SUCCESS")) {
+                success = true;
+            }
+            retry++;
+        }
+        assertEquals(task.getStatus(),"SUCCESS");
+
+        String target = null;
+        EnvironmentXML env = null;
+        try {
+            target = task.getOwner().getHref();
+            env = client.target(target)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<EnvironmentXML>() {
+                    });
+
+        } catch (WebApplicationException ex) {
+            fail("Exception : " + target + ", ex=" + ex);
+        }
+
+        System.out.println("Env=" + env);
+        assertEquals(env.getEnvName(),"testenv");
+
     }
 
     @Test
@@ -234,7 +308,6 @@ public class ApiTest {
         System.out.println("result = " + listEnv);
         assertNotNull(listEnv);
         assertFalse(listEnv.isEmpty());
-        assertEquals(listEnv.get(0).getEnvName(), "myenv");
     }
 
 }

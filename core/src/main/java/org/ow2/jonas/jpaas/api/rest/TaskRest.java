@@ -15,14 +15,14 @@ public interface TaskRest {
 	 * Get the Task with the ID=taskid <br>
 	 * Command: GET /task/{taskid}
 	 * 
-	 * @param taskid
+	 * @param taskId
 	 *            The Task's ID.
 	 * @return the XML Task description
 	 */
 	@GET
+    @Path("{taskId}")
 	@Produces(MediaType.APPLICATION_XML)
-	@Path("{taskid}")
-	Response getTask(@PathParam("taskid") String taskid);
+	Response getTask(@PathParam("taskId") String taskId);
 
 	/**
 	 * Finds the list of the available Tasks <br>
@@ -37,13 +37,13 @@ public interface TaskRest {
 	/**
 	 * Cancel a Task
 	 * 
-	 * @param taskid
+	 * @param taskId
 	 *            Id of the task to cancel
 	 * 
 	 */
 	@POST
 	@Produces(MediaType.APPLICATION_XML)
-	@Path("{taskid}/action/cancel")
-	Response cancelTask(@PathParam("taskid") final String taskid);
+	@Path("{taskId}/action/cancel")
+	Response cancelTask(@PathParam("taskId") final String taskId);
 
 }

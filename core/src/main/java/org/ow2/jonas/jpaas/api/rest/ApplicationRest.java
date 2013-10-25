@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("app")
@@ -22,8 +23,8 @@ public interface ApplicationRest {
 	 *         The appID and LinkXML element will be added to the Manifest.
 	 */
 	@POST
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
 	Response createApplication(String cloudApplicationDescriptor);
 
 	/**
@@ -40,8 +41,8 @@ public interface ApplicationRest {
 	 */
 	@POST
 	@Path("{appId}/version")
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
 	Response createApplicationVersion(@PathParam("appId") String appid, String applicationVersionDescriptor);
 
 	/**
@@ -56,8 +57,8 @@ public interface ApplicationRest {
 	
 	@POST
 	@Path("{appId}/version/{versionId}/instance")
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
 	Response createApplicationVersionInstance(@PathParam("appId") String appid, @PathParam("versionId") String versionid,
             String applicationVersionInstanceDescriptor);
 	
@@ -143,7 +144,7 @@ public interface ApplicationRest {
 		
 	@GET
 	@Path("{appId}")
-	@Produces("application/xml")
+	@Produces(MediaType.APPLICATION_XML)
 	Response describeApplication(@PathParam("appId") String appId);
 	
 	/**
@@ -157,7 +158,7 @@ public interface ApplicationRest {
 		
 	@DELETE
 	@Path("{appId}")
-	@Produces("application/xml")
+	@Produces(MediaType.APPLICATION_XML)
 	Response deleteApplication(@PathParam("appId") String appId);
 
 	/**
@@ -168,7 +169,7 @@ public interface ApplicationRest {
 	 */
 		
 	@DELETE
-	@Produces("application/xml")
+	@Produces(MediaType.APPLICATION_XML)
 	Response deleteApplications();
 
     /**

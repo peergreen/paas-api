@@ -11,6 +11,7 @@ import org.ow2.util.log.LogFactory;
 
 import javax.ws.rs.core.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class TaskManager {
@@ -25,9 +26,17 @@ public class TaskManager {
 
     public static final String CANCEL_TASK_NAME = "task:cancel";
 
+    public static final long PERIOD_REFRESH = 10000;
+    public static final long PERIOD_CLEAN = 60000;
+    public static final long PERIOD_SLEEP = 5000;
+
+    private static TaskThreadManager taskThreadManager;
 
     public TaskManager() {
-        tasks = new HashMap<String, Task>();
+        logger.info("Init");
+        tasks = new ConcurrentHashMap<String, Task>();
+        taskThreadManager = new TaskThreadManager(this);
+        taskThreadManager.start();
     }
 
     public static TaskManager getSingleton() {
@@ -38,10 +47,13 @@ public class TaskManager {
     }
 
     public Task getTask(String id) {
-        return tasks.get(id);
+        Task task = tasks.get(id);
+        refreshTask(task);
+        return task;
     }
 
     public List<Task> getTasks() {
+        refresh();
         return new ArrayList<Task>(tasks.values());
     }
 
@@ -55,8 +67,8 @@ public class TaskManager {
         tasks.remove(task.getId());
     }
 
-    public void clean() {
-        logger.info("clean tasks list");
+    private void clean() {
+        logger.info("Clean tasks list");
 
         Date currentDate = new Date();
 
@@ -71,21 +83,31 @@ public class TaskManager {
         }
     }
 
-    public void refresh() {
-        logger.info("refresh tasks list");
+    private void refreshTask(Task task) {
+        logger.info("Refresh task: " + task.getId());
+         if (task.getStatus().equals(Status.RUNNING)) {
 
-        for (Task task : tasks.values()) {
-
-            if (task.getStatus().equals(Status.RUNNING)) {
                 if (task.getJob().isDone()) {
+                    logger.info("Task is done: " + task.getId());
+
                     task.setStatus(Status.SUCCESS);
                     task.setEndTime(new Date());
                 }
                 if (task.getJob().isCancelled()) {
+                    logger.info("Task is canceled: " + task.getId());
+
                     task.setStatus(Status.CANCELED);
                     task.setEndTime(new Date());
                 }
             }
+
+    }
+
+
+    private void refresh() {
+        logger.info("Refresh tasks list");
+        for (Task task : tasks.values()) {
+            registerTask(task);
         }
     }
 
@@ -131,4 +153,44 @@ public class TaskManager {
         return task.getBaseUrl() + "/task/" + task.getId() + "/action/cancel";
     }
 
+    class TaskThreadManager extends Thread {
+        private TaskManager taskManager;
+
+        public TaskThreadManager(TaskManager taskManager) {
+            super("TaskManager");
+            this.taskManager = taskManager;
+        }
+
+        public void run() {
+
+            taskManager.logger.info("Start thread");
+
+            Date lastClean = new Date();
+            Date lastRefresh = new Date();
+
+            while (true) {
+
+                Date currentDate = new Date();
+
+                if (currentDate.getTime() - lastClean.getTime() > TaskManager.PERIOD_CLEAN) {
+                    this.taskManager.clean();
+                    lastClean = currentDate;
+                }
+                if (currentDate.getTime() - lastRefresh.getTime() > TaskManager.PERIOD_REFRESH) {
+                    this.taskManager.refresh();
+                    lastRefresh = currentDate;
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+
+        }
+    }
+
 }
+
+

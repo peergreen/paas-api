@@ -49,16 +49,21 @@ import org.xml.sax.SAXException;
  * @author Mohamed Sellami (Telecom SudParis)
  *
  */
-@Path("app")
 public class ApplicationManagerResource implements ApplicationRest {
 
     private Log logger = LogFactory.getLog(ApplicationManagerResource.class);
 
+    private ApplicationManager appManager;
 
     /**
      * An element to display Errors
      */
     private ErrorXML error = new ErrorXML();
+
+
+    public ApplicationManagerResource() {
+        appManager = ApplicationManagerClient.getProxy();
+    }
 
     /**
      * {@inheritDoc}
@@ -69,7 +74,7 @@ public class ApplicationManagerResource implements ApplicationRest {
                 + cloudApplicationDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplication operation from the EJB */
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
+
         org.ow2.jonas.jpaas.manager.api.Application app = null;
         try {
             app = appManager.createApplication(cloudApplicationDescriptor);
@@ -105,7 +110,6 @@ public class ApplicationManagerResource implements ApplicationRest {
                 + applicationVersionDescriptor
                 + ") on the JPAAS-APPLICATION-MANAGER");
         /* call the createApplicationVersion operation from the EJB */
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         ApplicationVersion appVer=null;
         try {
             appVer = appManager
@@ -139,7 +143,6 @@ public class ApplicationManagerResource implements ApplicationRest {
         logger.info("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
         List<org.ow2.jonas.jpaas.manager.api.Application> listApp = new ArrayList<org.ow2.jonas.jpaas.manager.api.Application>();
         /* call the findApplications operation from the EJB */
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         listApp = appManager.findApplications();
 
 
@@ -165,7 +168,6 @@ public class ApplicationManagerResource implements ApplicationRest {
                 + appid + ") on the JPAAS-APPLICATION-MANAGER");
         List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
         /* call the findApplicationVersions(appid) operation from the EJB */
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         listAppVer = appManager.findApplicationVersion(appid);
         List<ApplicationVersionXML> listAppVersionsXML = new ArrayList<ApplicationVersionXML>();
 
@@ -195,7 +197,6 @@ public class ApplicationManagerResource implements ApplicationRest {
                 + ") on the JPAAS-APPLICATION-MANAGER");
         List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
         /* call the findApplicationVersionInstances operation from the EJB */
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         listAppVerInstances = appManager.findApplicationVersionsInstances(
                 appid, versionid);
         List<ApplicationVersionInstanceXML> listAppVersionInstancesXML = new ArrayList<ApplicationVersionInstanceXML>();
@@ -218,7 +219,6 @@ public class ApplicationManagerResource implements ApplicationRest {
     public Response startApplicationVersionInstance(String appid,
             String versionId, String instanceId) {
 
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
 
         Future<ApplicationVersionInstance> instance = null;
 
@@ -245,7 +245,6 @@ public class ApplicationManagerResource implements ApplicationRest {
 
     @Override
     public Response describeApplication(String appId) {
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
 
         org.ow2.jonas.jpaas.manager.api.Application app = null;
         app = appManager.getApplication(appId);
@@ -279,7 +278,6 @@ public class ApplicationManagerResource implements ApplicationRest {
      */
     @Override
     public Response scaleUp(String appId, String versionId, String instanceId) {
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
 
         Future<ApplicationVersionInstance> instance = null;
 
@@ -315,7 +313,6 @@ public class ApplicationManagerResource implements ApplicationRest {
      */
     @Override
     public Response scaleDown(String appId, String versionId, String instanceId) {
-        ApplicationManager appManager = ApplicationManagerClient.getProxy();
         Future<ApplicationVersionInstance> instance = null;
 
         try {
