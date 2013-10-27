@@ -43,10 +43,9 @@ public interface ApplicationRest {
 	@Path("{appId}/version")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	Response createApplicationVersion(@PathParam("appId") String appid, String applicationVersionDescriptor);
+	Response createApplicationVersion(@PathParam("appId") String appId, String applicationVersionDescriptor);
 
 	/**
-	 * TODO <br>
 	 * Command: POST /app/{appId}/version/{versionId}/instance
 	 * 
 	 * @param applicationVersionInstanceDescriptor
@@ -59,7 +58,7 @@ public interface ApplicationRest {
 	@Path("{appId}/version/{versionId}/instance")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	Response createApplicationVersionInstance(@PathParam("appId") String appid, @PathParam("versionId") String versionid,
+	Response createApplicationVersionInstance(@PathParam("appId") String appId, @PathParam("versionId") String versionId,
             String applicationVersionInstanceDescriptor);
 	
 	
@@ -74,65 +73,65 @@ public interface ApplicationRest {
 	/**
 	 * List application versions Command: GET /app/{appId}/version
 	 * 
-	 * @param appid
+	 * @param appId
 	 *            The application's ID
 	 * @return A list of available application's versions
 	 */
 	@GET
 	@Path("{appId}/version")
-	Response findApplicationVersions(@PathParam("appId") String appid);
+	Response findApplicationVersions(@PathParam("appId") String appId);
 
 	/**
 	 * List application version instances Command: GET
 	 * /app/{appId}/version/{versionId}
 	 * 
-	 * @param appid
+	 * @param appId
 	 *            The application's ID
-	 * @param versionid
+	 * @param versionId
 	 *            The application version's ID
 	 * @return A list of available application versions' instances
 	 */
 
 	@GET
 	@Path("{appId}/version/{versionId}")
-	Response findApplicationVersionInstances(@PathParam("appId") String appid,
-			@PathParam("versionId") String versionid);
+	Response findApplicationVersionInstances(@PathParam("appId") String appId,
+			@PathParam("versionId") String versionId);
 	
 	/**
 	 * Start an application version instance Command: POST
 	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
 	 * 
-	 * @param appid
+	 * @param appId
 	 *            The application's ID
-	 * @param versionid
+	 * @param versionId
 	 *            The application version's ID
-	 * @param instanceid
+	 * @param instanceId
 	 *            The application instance's ID	            
 	 * @return XML Task with TaskId
 	 */
 
 	@POST
 	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/start")
-	Response startApplicationVersionInstance(@PathParam("appId") String appid,
-			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
+	Response startApplicationVersionInstance(@PathParam("appId") String appId,
+			@PathParam("versionId") String versionId,@PathParam("instanceId") String instanceId);
 	
 	/**
 	 * Stop an application version instance Command: POST
 	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
 	 * 
-	 * @param appid
+	 * @param appId
 	 *            The application's ID
-	 * @param versionid
+	 * @param versionId
 	 *            The application version's ID
-	 * @param instanceid
+	 * @param instanceId
 	 *            The application instance's ID	            
 	 * @return \\TODO
 	 */
 
 	@POST
 	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/stop")
-	Response stopApplicationVersionInstance(@PathParam("appId") String appid,
-			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
+	Response stopApplicationVersionInstance(@PathParam("appId") String appId,
+			@PathParam("versionId") String versionId,@PathParam("instanceId") String instanceId);
 	/**
 	 * Describe application.
 	 * Command: GET /app/{appId}
@@ -155,56 +154,76 @@ public interface ApplicationRest {
 	 *           The application's ID
 	 * @return HTTP status
 	 */
-		
 	@DELETE
 	@Path("{appId}")
 	@Produces(MediaType.APPLICATION_XML)
 	Response deleteApplication(@PathParam("appId") String appId);
 
-	/**
-	 * Delete applications. Removes all existing applications and all their versions.
-	 * Command: DELETE /app
-	 * 
-	 * @return HTTP status
-	 */
-		
-	@DELETE
-	@Produces(MediaType.APPLICATION_XML)
-	Response deleteApplications();
+    /**
+     * Delete application version. Removes all existing instances.
+     * Command: DELETE /app/{appId}
+     *
+     * @param appId
+     *           The application's ID
+     * @param versionId
+     *           The application's version ID
+     * @return HTTP status
+     */
+    @DELETE
+    @Path("{appId}/version/{versionId}")
+    @Produces(MediaType.APPLICATION_XML)
+    Response deleteApplicationVersion(@PathParam("appId") String appId, @PathParam("versionId") String versionId);
+
+    /**
+     * Delete application version instance.
+     * Command: DELETE /app/{appId}
+     *
+     * @param appId
+     *           The application's ID
+     * @param versionId
+     *           The application's version ID
+     * @param instanceId
+     *           The application's version instance ID
+     * @return HTTP status
+     */
+    @DELETE
+    @Path("{appId}/version/{versionId}/instance/{instanceId}")
+    @Produces(MediaType.APPLICATION_XML)
+    Response deleteApplicationVersionInstance(@PathParam("appId") String appId, @PathParam("versionId") String versionId, @PathParam("instanceId") String instanceId);
 
     /**
    	 * Scale up an application version instance Command: POST
    	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
    	 *
-   	 * @param appid
+   	 * @param appId
    	 *            The application's ID
-   	 * @param versionid
+   	 * @param versionId
    	 *            The application version's ID
-   	 * @param instanceid
+   	 * @param instanceId
    	 *            The application instance's ID
    	 * @return XML Task with TaskId
    	 */
 
    	@POST
    	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/scaleup")
-   	Response scaleUp(@PathParam("appId") String appid,
-   			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
+   	Response scaleUp(@PathParam("appId") String appId,
+   			@PathParam("versionId") String versionId,@PathParam("instanceId") String instanceId);
 
     /**
    	 * Scale down an application version instance Command: POST
    	 * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
    	 *
-   	 * @param appid
+   	 * @param appId
    	 *            The application's ID
-   	 * @param versionid
+   	 * @param versionId
    	 *            The application version's ID
-   	 * @param instanceid
+   	 * @param instanceId
    	 *            The application instance's ID
    	 * @return XML Task with TaskId
    	 */
 
    	@POST
    	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/scaledown")
-   	Response scaleDown(@PathParam("appId") String appid,
-   			@PathParam("versionId") String versionid,@PathParam("instanceId") String instanceid);
+   	Response scaleDown(@PathParam("appId") String appId,
+   			@PathParam("versionId") String versionId,@PathParam("instanceId") String instanceId);
 }

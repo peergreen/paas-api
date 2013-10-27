@@ -142,7 +142,7 @@ public class ApiTest {
                     });
 
         } catch (WebApplicationException ex) {
-            fail("Status not found : " + Response.Status.NOT_FOUND);
+            fail("Error : " + ex.getMessage());
         }
 
         System.out.println("result = " + listApp);
@@ -165,7 +165,7 @@ public class ApiTest {
                     });
 
         } catch (WebApplicationException ex) {
-            fail("Status not found : " + Response.Status.NOT_FOUND);
+            fail("Error : " + ex.getMessage());
         }
 
         System.out.println("result = " + app);
@@ -240,7 +240,8 @@ public class ApiTest {
         if (task.getStatus().equals("SUCCESS")) {
             success = true;
         }
-       int retry = 2;
+
+        int retry = 2;
         while (! success && retry < 10){
             System.out.println("Waiting ending of creating env - retry = " + retry);
             try {
@@ -269,7 +270,7 @@ public class ApiTest {
             }
             retry++;
         }
-        assertEquals(task.getStatus(),"SUCCESS");
+        assertEquals(task.getStatus(), "SUCCESS");
 
         String target = null;
         EnvironmentXML env = null;
@@ -302,7 +303,7 @@ public class ApiTest {
                     });
 
         } catch (WebApplicationException ex) {
-            fail("Status not found : " + Response.Status.NOT_FOUND);
+            fail("Error : " + ex.getMessage());
         }
 
         System.out.println("result = " + listEnv);

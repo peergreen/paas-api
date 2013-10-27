@@ -39,13 +39,13 @@ public class TaskResource implements TaskRest {
 
         if (task != null) {
             TaskXML taskXML = TaskManager.getSingleton().buildTaskXml(task);
-            return Response.status(Response.Status.OK).entity(taskXML).build();
+            return Response.status(Response.Status.OK).entity(taskXML).type(MediaType.APPLICATION_XML_TYPE).build();
         } else {
             logger.error("Cannot find a Task with ID: " + taskId);
             ErrorXML error = new ErrorXML();
             error.setValue("Cannot find a Task with ID: " + taskId + ".");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
+                    .entity(error).type(MediaType.APPLICATION_XML_TYPE).build();
         }
     }
 
@@ -88,11 +88,12 @@ public class TaskResource implements TaskRest {
 
             return Response.status(Response.Status.OK).build();
         } else {
+            logger.error("Task " + taskId + " not found.");
             ErrorXML error = new ErrorXML();
-            error.setValue("Task " + taskId + " not found.\n");
+            error.setValue("Task " + taskId + " not found.");
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
+                    .entity(error).type(MediaType.APPLICATION_XML_TYPE).build();
         }
 
     }

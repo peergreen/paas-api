@@ -54,12 +54,7 @@ public class ApplicationManagerResource implements ApplicationRest {
     private Log logger = LogFactory.getLog(ApplicationManagerResource.class);
 
     private ApplicationManager appManager;
-
-    /**
-     * An element to display Errors
-     */
     private ErrorXML error = new ErrorXML();
-
 
     public ApplicationManagerResource() {
         appManager = ApplicationManagerClient.getProxy();
@@ -70,23 +65,20 @@ public class ApplicationManagerResource implements ApplicationRest {
      */
     @Override
     public Response createApplication(String cloudApplicationDescriptor) {
-        logger.info("[CO-PaaS-API]: Call createApplication("
-                + cloudApplicationDescriptor
-                + ") on the JPAAS-APPLICATION-MANAGER");
-        /* call the createApplication operation from the EJB */
 
+        logger.info("Create application with Desc=" + cloudApplicationDescriptor);
         org.ow2.jonas.jpaas.manager.api.Application app = null;
         try {
             app = appManager.createApplication(cloudApplicationDescriptor);
-
         } catch (ApplicationManagerBeanException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            error.setValue("Failed to create the Application: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
         }
+
         // TODO add the other application attributes
         if (app != null) {
             ApplicationXML appXML = new ApplicationXML();
-
             appXML.setAppId(app.getAppId());
             appXML.setAppName(app.getName());
             return Response.status(Response.Status.OK)
@@ -97,32 +89,25 @@ public class ApplicationManagerResource implements ApplicationRest {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
         }
-        // TODO: Retrieve the object returned by the JPAAS-APPLICATION-MANAGER
-        // add the appID and LinkXML element to the Manifest
-        // TODO: This will be a file created based on the new manifest
-    }
+     }
 
     /**
      * {@inheritDoc}
      */
-    public Response createApplicationVersion(String appid, String applicationVersionDescriptor) {
-        logger.info("[CO-PaaS-API]: Call createApplication("
-                + applicationVersionDescriptor
-                + ") on the JPAAS-APPLICATION-MANAGER");
-        /* call the createApplicationVersion operation from the EJB */
+    public Response createApplicationVersion(String appId, String applicationVersionDescriptor) {
+        logger.info("Create application version with Desc=" + applicationVersionDescriptor);
+
         ApplicationVersion appVer=null;
         try {
-            appVer = appManager
-                    .createApplicationVersion(applicationVersionDescriptor);
+            appVer = appManager.createApplicationVersion(applicationVersionDescriptor);
         } catch (ApplicationManagerBeanException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            error.setValue("Failed to create the Application Version : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
         }
 
-        // TODO add the other application attributes
         if (appVer != null) {
             ApplicationVersionXML appVerXML = new ApplicationVersionXML();
-
             appVerXML.setAppVerId(appVer.getAppId());
             appVerXML.setAppVerLabel(appVer.getVersionLabel());
             return Response.status(Response.Status.OK)
@@ -135,234 +120,25 @@ public class ApplicationManagerResource implements ApplicationRest {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Response findApplications() {
-        logger.info("[CO-PaaS-API]: Call findApplications() on the JPAAS-APPLICATION-MANAGER");
-        List<org.ow2.jonas.jpaas.manager.api.Application> listApp = new ArrayList<org.ow2.jonas.jpaas.manager.api.Application>();
-        /* call the findApplications operation from the EJB */
-        listApp = appManager.findApplications();
+    public Response createApplicationVersionInstance(String appId, String versionId, String applicationVersionInstanceDescriptor) {
+        logger.info("Creation application version instance with appId="+ appId + ", versionId=" + versionId, "desc=" + applicationVersionInstanceDescriptor);
 
-
-        List<ApplicationXML> listAppsXML = new ArrayList<ApplicationXML>();
-
-        if (listApp != null) {
-            for (org.ow2.jonas.jpaas.manager.api.Application app : listApp) {
-                ApplicationXML appXML = buildApplication(app);
-                if (appXML != null) {
-                    listAppsXML.add(appXML);
-                }
-            }
-        }
-        return Response.status(Response.Status.OK)
-                .entity(new GenericEntity<List<ApplicationXML>>(listAppsXML) {
-                }).type(MediaType.APPLICATION_XML_TYPE).build();
-
-    }
-
-    @Override
-    public Response findApplicationVersions(@PathParam("appId") String appid) {
-        logger.info("[CO-PaaS-API]: Call findApplicationVersions("
-                + appid + ") on the JPAAS-APPLICATION-MANAGER");
-        List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
-        /* call the findApplicationVersions(appid) operation from the EJB */
-        listAppVer = appManager.findApplicationVersion(appid);
-        List<ApplicationVersionXML> listAppVersionsXML = new ArrayList<ApplicationVersionXML>();
-
-        if (listAppVer != null) {
-            for (ApplicationVersion appVersion : listAppVer) {
-                ApplicationVersionXML appVersionXML = buildApplicationVersion(appVersion);
-                if (appVersionXML != null) {
-                    listAppVersionsXML.add(appVersionXML);
-                }
-            }
-        }
-        return Response.status(Response.Status.OK)
-                .entity(new GenericEntity<List<ApplicationVersionXML>>(listAppVersionsXML) {
-                }).type(MediaType.APPLICATION_XML_TYPE).build();
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Response findApplicationVersionInstances(
-            @PathParam("appId") String appid,
-            @PathParam("versionId") String versionid) {
-        logger.info("[CO-PaaS-API]: Call findApplicationVersions("
-                + appid + "," + versionid
-                + ") on the JPAAS-APPLICATION-MANAGER");
-        List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
-        /* call the findApplicationVersionInstances operation from the EJB */
-        listAppVerInstances = appManager.findApplicationVersionsInstances(
-                appid, versionid);
-        List<ApplicationVersionInstanceXML> listAppVersionInstancesXML = new ArrayList<ApplicationVersionInstanceXML>();
-
-        if (listAppVersionInstancesXML != null) {
-            for (ApplicationVersionInstance appVersionInstance : listAppVerInstances) {
-                ApplicationVersionInstanceXML appVersionInstanceXML = buildApplicationVersionInstance(appVersionInstance);
-                if (appVersionInstanceXML != null) {
-                    listAppVersionInstancesXML.add(appVersionInstanceXML);
-                }
-            }
-        }
-        return Response.status(Response.Status.OK)
-                .entity(new GenericEntity<List<ApplicationVersionInstanceXML>>(listAppVersionInstancesXML) {
-                }).type(MediaType.APPLICATION_XML_TYPE).build();
-
-    }
-
-    @Override
-    public Response startApplicationVersionInstance(String appid,
-            String versionId, String instanceId) {
-
-
-        Future<ApplicationVersionInstance> instance = null;
-
-        try {
-            instance = appManager.startApplicationVersionInstance(appid, versionId, instanceId);
-        } catch (ApplicationManagerBeanException e1) {
-            e1.printStackTrace();
-        }
-
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
-    @Override
-    public Response describeApplication(String appId) {
-
-        org.ow2.jonas.jpaas.manager.api.Application app = null;
-        app = appManager.getApplication(appId);
-
-        ApplicationXML appXML = buildApplication(app);
-
-        return Response.status(Response.Status.OK)
-                .entity(appXML).type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
-    @Override
-    public Response deleteApplication(String appId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Response deleteApplications() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * Scale up an application version instance Command: POST
-     * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
-     *
-     * @param appId      The application's ID
-     * @param versionId  The application version's ID
-     * @param instanceId The application instance's ID
-     * @return XML Task with TaskId
-     */
-    @Override
-    public Response scaleUp(String appId, String versionId, String instanceId) {
-
-        Future<ApplicationVersionInstance> instance = null;
-
-        try {
-            instance = appManager.scaleUp(appId, versionId, instanceId);
-        } catch (ApplicationManagerBeanException e1) {
-            e1.printStackTrace();
-        }
-
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
-    /**
-     * Scale down an application version instance Command: POST
-     * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
-     *
-     * @param appId      The application's ID
-     * @param versionId  The application version's ID
-     * @param instanceId The application instance's ID
-     * @return XML Task with TaskId
-     */
-    @Override
-    public Response scaleDown(String appId, String versionId, String instanceId) {
-        Future<ApplicationVersionInstance> instance = null;
-
-        try {
-            instance = appManager.scaleDown(appId, versionId, instanceId);
-        } catch (ApplicationManagerBeanException e1) {
-            e1.printStackTrace();
-        }
-
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
-    @Override
-    public Response stopApplicationVersionInstance(String appid,
-            String versionid, String instanceid) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    public Response createApplicationVersionInstance(String appId, String versionid,
-            String applicationVersionInstanceDescriptor) {
-        logger.info("[CO-PaaS-API]: Call createApplicationVersionInstance("
-                + applicationVersionInstanceDescriptor
-                + ") on the JPAAS-APPLICATION-MANAGER");
-        /* call the createApplicationVersionInstance operation from the EJB */
-        ApplicationManager envManager = ApplicationManagerClient.getProxy();
         ApplicationVersionInstance appVerIns=null;
+
         try {
             Element appXml = null;
             DOMImplementationRegistry registry = null;
             appXml = loadXml(applicationVersionInstanceDescriptor);
             Element cloudApplicationNode = (Element) appXml.getElementsByTagName("cloud-application").item(0);
             Element deploymentNode = (Element) appXml.getElementsByTagName("deployment").item(0);
+
             //Add the NameSpace to fix a bug
             cloudApplicationNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
                     "http://jonas.ow2.org/ns/cloud/application/1.0");
             deploymentNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
                     "http://jonas.ow2.org/ns/cloud/deployment/1.0");
+
             registry = DOMImplementationRegistry.newInstance();
             DOMImplementationLS impl =
                     (DOMImplementationLS)registry.getDOMImplementation("LS");
@@ -381,13 +157,12 @@ public class ApplicationManagerResource implements ApplicationRest {
             writer.write(deploymentNode, lsOutput);
             String deployment = stringWriter.toString();
 
-            appVerIns = envManager.createApplicationVersionInstance(cloudApplication, deployment);
+            appVerIns = appManager.createApplicationVersionInstance(cloudApplication, deployment);
 
-        } catch (ApplicationManagerBeanException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            error.setValue("Failed to create the Application Version Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
         }
 
         // TODO add the other application attributes
@@ -408,6 +183,207 @@ public class ApplicationManagerResource implements ApplicationRest {
     }
 
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response findApplications() {
+        logger.info("Get all applications");
+        List<org.ow2.jonas.jpaas.manager.api.Application> listApp = new ArrayList<org.ow2.jonas.jpaas.manager.api.Application>();
+        listApp = appManager.findApplications();
+        List<ApplicationXML> listAppsXML = new ArrayList<ApplicationXML>();
+        if (listApp != null) {
+            for (org.ow2.jonas.jpaas.manager.api.Application app : listApp) {
+                ApplicationXML appXML = buildApplication(app);
+                if (appXML != null) {
+                    listAppsXML.add(appXML);
+                }
+            }
+        }
+        return Response.status(Response.Status.OK)
+                .entity(new GenericEntity<List<ApplicationXML>>(listAppsXML) {
+                }).type(MediaType.APPLICATION_XML_TYPE).build();
+
+    }
+
+    @Override
+    public Response findApplicationVersions(@PathParam("appId") String appId) {
+        logger.info("Get applications version with appId="+ appId);
+        List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
+        listAppVer = appManager.findApplicationVersion(appId);
+        List<ApplicationVersionXML> listAppVersionsXML = new ArrayList<ApplicationVersionXML>();
+        if (listAppVer != null) {
+            for (ApplicationVersion appVersion : listAppVer) {
+                ApplicationVersionXML appVersionXML = buildApplicationVersion(appVersion);
+                if (appVersionXML != null) {
+                    listAppVersionsXML.add(appVersionXML);
+                }
+            }
+        }
+        return Response.status(Response.Status.OK)
+                .entity(new GenericEntity<List<ApplicationVersionXML>>(listAppVersionsXML) {
+                }).type(MediaType.APPLICATION_XML_TYPE).build();
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response findApplicationVersionInstances(
+            @PathParam("appId") String appId,
+            @PathParam("versionId") String versionId) {
+        logger.info("Get applications version instance with appId=" + appId + ", versionId=" + versionId);
+        List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
+        listAppVerInstances = appManager.findApplicationVersionsInstances(appId, versionId);
+        List<ApplicationVersionInstanceXML> listAppVersionInstancesXML = new ArrayList<ApplicationVersionInstanceXML>();
+        if (listAppVersionInstancesXML != null) {
+            for (ApplicationVersionInstance appVersionInstance : listAppVerInstances) {
+                ApplicationVersionInstanceXML appVersionInstanceXML = buildApplicationVersionInstance(appVersionInstance);
+                if (appVersionInstanceXML != null) {
+                    listAppVersionInstancesXML.add(appVersionInstanceXML);
+                }
+            }
+        }
+        return Response.status(Response.Status.OK)
+                .entity(new GenericEntity<List<ApplicationVersionInstanceXML>>(listAppVersionInstancesXML) {
+                }).type(MediaType.APPLICATION_XML_TYPE).build();
+
+    }
+
+    @Override
+    public Response startApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        logger.info("Start application with appId="+ appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
+
+        Future<ApplicationVersionInstance> instance = null;
+        try {
+            instance = appManager.startApplicationVersionInstance(appId, versionId, instanceId);
+        } catch (ApplicationManagerBeanException e) {
+            error.setValue("Failed to start the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+        ApplicationVersionInstanceXML appVersionInstanceXML=null;
+        try {
+            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
+        } catch (InterruptedException | ExecutionException e) {
+            error.setValue("Failed to start the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response describeApplication(String appId) {
+        org.ow2.jonas.jpaas.manager.api.Application app = null;
+        app = appManager.getApplication(appId);
+        ApplicationXML appXML = buildApplication(app);
+        return Response.status(Response.Status.OK)
+                .entity(appXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response deleteApplication(String appId) {
+        logger.info("Delete application with appId="+ appId);
+        appManager.deleteApplication(appId);
+        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response deleteApplicationVersion(String appId, String versionId) {
+        logger.info("Delete application with appId="+ appId + ", versionId=" + versionId);
+        appManager.deleteApplicationVersion(appId, versionId);
+        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response deleteApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        logger.info("Delete application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
+        appManager.deleteApplicationVersionInstance(appId, versionId, instanceId);
+        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    /**
+     * Scale up an application version instance Command: POST
+     * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
+     *
+     * @param appId      The application's ID
+     * @param versionId  The application version's ID
+     * @param instanceId The application instance's ID
+     * @return XML Task with TaskId
+     */
+    @Override
+    public Response scaleUp(String appId, String versionId, String instanceId) {
+        logger.info("Scale up application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
+
+        Future<ApplicationVersionInstance> instance = null;
+
+        try {
+            instance = appManager.scaleUp(appId, versionId, instanceId);
+        } catch (ApplicationManagerBeanException e1) {
+            e1.printStackTrace();
+        }
+
+        ApplicationVersionInstanceXML appVersionInstanceXML=null;
+        try {
+            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
+        } catch (InterruptedException | ExecutionException e) {
+            error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    /**
+     * Scale down an application version instance Command: POST
+     * /app/{appId}/version/{versionId}/instance/{instanceId}/action/start
+     *
+     * @param appId      The application's ID
+     * @param versionId  The application version's ID
+     * @param instanceId The application instance's ID
+     * @return XML Task with TaskId
+     */
+    @Override
+    public Response scaleDown(String appId, String versionId, String instanceId) {
+        logger.info("Scale down application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
+
+        Future<ApplicationVersionInstance> instance = null;
+
+        try {
+            instance = appManager.scaleDown(appId, versionId, instanceId);
+        } catch (ApplicationManagerBeanException e1) {
+            e1.printStackTrace();
+        }
+
+        ApplicationVersionInstanceXML appVersionInstanceXML=null;
+        try {
+            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
+        } catch (InterruptedException | ExecutionException e) {
+            error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response stopApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        logger.info("Stop application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
+        // TODO add the arguments
+        appManager.stopApplicationVersionInstance();
+
+
+        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
 
     /**
      * builds the XML representation for an Application
