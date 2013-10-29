@@ -15,9 +15,7 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.ow2.jonas.jpaas.api.xml.ApplicationXML;
-import org.ow2.jonas.jpaas.api.xml.EnvironmentXML;
-import org.ow2.jonas.jpaas.api.xml.TaskXML;
+import org.ow2.jonas.jpaas.api.xml.*;
 import org.ow2.jonas.jpaas.util.clouddescriptors.cloudapplication.CloudApplicationDesc;
 import org.slf4j.LoggerFactory;
 
@@ -129,8 +127,9 @@ public class ApiTest {
         assertNotNull(context);
     }
 
-    @Test
-    public void checkFindApplications() {
+
+
+    private List<ApplicationXML> checkFindApplications(String appName, boolean testIfPresent) {
         System.out.println("checkFindApplications ....");
 
         List<ApplicationXML> listApp = null;
@@ -148,40 +147,193 @@ public class ApiTest {
         System.out.println("result = " + listApp);
         assertNotNull(listApp);
         assertFalse(listApp.isEmpty());
-        assertEquals(listApp.get(0).getAppId(), "1");
-        assertEquals(listApp.get(0).getAppName(), "myapp");
+        boolean found = false;
+        for (ApplicationXML app:listApp) {
+            if (app.getAppName().equals(appName)) {
+                found = true;
+                break;
+            }
+
+        }
+        if (testIfPresent) {
+            assertTrue(found);
+        } else {
+            assertFalse(found);
+        }
+        return listApp;
     }
 
-    @Test
-    public void checkGetApplications() {
-        System.out.println("checkGetApplication ....");
+    private List<ApplicationVersionXML> checkFindApplicationVersions(String appId, String labelVersion, boolean testIfPresent) {
+        System.out.println("checkFindApplicationVersions ....");
 
-        ApplicationXML app = null;
+        List<ApplicationVersionXML> versions = null;
+        String url = BASE_URL_API + "app/" + appId + "/version";
+        System.out.println("url=" + url);
 
         try {
-            app = client.target(BASE_URL_API + "app/1" )
+            versions = client.target(url)
                     .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<ApplicationXML>() {
+                    .get(new GenericType<List<ApplicationVersionXML>>() {
                     });
 
         } catch (WebApplicationException ex) {
+            ex.printStackTrace();
             fail("Error : " + ex.getMessage());
         }
 
-        System.out.println("result = " + app);
-        assertNotNull(app);
-        assertEquals(app.getAppId(), "1");
-        assertEquals(app.getAppName(), "myapp");
+        System.out.println("result = " + versions);
+        assertNotNull(versions);
+        assertFalse(versions.isEmpty());
+        boolean found = false;
+        for (ApplicationVersionXML version:versions) {
+            if (version.getAppVerLabel().equals(labelVersion)) {
+                found = true;
+                break;
+            }
+
+        }
+        if (testIfPresent) {
+            assertTrue(found);
+        } else {
+            assertFalse(found);
+        }
+        return versions;
+    }
+
+    private List<ApplicationVersionInstanceXML> checkFindApplicationVersionInstances(String appId, String versionId, String instanceName, boolean testIfPresent) {
+        System.out.println("checkFindApplicationVersionInstances ....");
+
+        List<ApplicationVersionInstanceXML> instances = null;
+        String url = BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance";
+        System.out.println("url=" + url);
+
+
+        try {
+            instances = client.target(url)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ApplicationVersionInstanceXML>>() {
+                    });
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Error : " + ex.getMessage());
+        }
+
+        System.out.println("result = " + instances);
+        assertNotNull(instances);
+        assertFalse(instances.isEmpty());
+        boolean found = false;
+        for (ApplicationVersionInstanceXML instance:instances) {
+            if (instance.getInstanceName().equals(instanceName)) {
+                found = true;
+                break;
+            }
+
+        }
+        if (testIfPresent) {
+            assertTrue(found);
+        } else {
+            assertFalse(found);
+        }
+        return instances;
     }
 
     @Test
-    public void checkCreateApplication() {
-        System.out.println("checkCreateApplication ....");
+    public void checkFindApplicationsMyApp() {
+        System.out.println("checkFindApplications ....");
+        checkFindApplications("myapp", true);
+        checkFindApplicationVersions("1", "myversion", true);
+        checkFindApplicationVersionInstances("1", "1", "myinstance", true);
+    }
 
+    private ApplicationXML checkGetApplication(String appId, String appName) {
+        System.out.println("checkGetApplication: appId=" + appId + ", appName=" + appName);
+        ApplicationXML app = null;
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("cloud-application.xml");
+        try {
+            app = client.target(BASE_URL_API + "app/" + appId)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationXML>() {
+                    });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            fail("Error : " + ex.getMessage());
+        }
+        System.out.println("result = " + app);
+        assertNotNull(app);
+        assertEquals(app.getAppId(), appId);
+
+        if (appName != null) {
+             assertEquals(app.getAppName(), appName);
+        }
+
+        return app;
+    }
+
+    private ApplicationVersionXML checkGetApplicationVersion(String appId, String versionId, String versionLabel) {
+        System.out.println("checkGetApplicationVersion: appId=" + appId + ", versionId=" + versionId + ", versionLabel=" + versionLabel);
+        ApplicationVersionXML version = null;
+
+        try {
+            version = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationVersionXML>() {
+                    });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            fail("Error : " + ex.getMessage());
+        }
+        System.out.println("result = " + version);
+        assertNotNull(version);
+        assertEquals(version.getAppId(), appId);
+        assertEquals(version.getAppVerId(), versionId);
+
+        if (versionLabel != null) {
+            assertEquals(version.getAppVerLabel(), versionLabel);
+        }
+
+        return version;
+    }
+
+    private ApplicationVersionInstanceXML checkGetApplicationVersionInstance(String appId, String versionId, String instanceId, String instanceName) {
+        System.out.println("checkGetApplicationVersionInstance: appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId + ", instanceName" + instanceName);
+        ApplicationVersionInstanceXML instance = null;
+
+        try {
+            instance = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance/" + instanceId)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationVersionInstanceXML>() {
+                    });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            fail("Error : " + ex.getMessage());
+        }
+        System.out.println("result = " + instance);
+        assertNotNull(instance);
+        assertEquals(instance.getAppId(), appId);
+        assertEquals(instance.getVersionID(), versionId);
+        assertEquals(instance.getInstanceId(), instanceId);
+
+        if (instanceName != null) {
+            assertEquals(instance.getInstanceName(), instanceName);
+        }
+
+        return instance;
+    }
+
+    @Test
+    public void checkGetApplicationMyApp() {
+        checkGetApplication("1", "myapp");
+        checkGetApplicationVersion("1", "1", "myversion");
+        checkGetApplicationVersionInstance("1", "1", "1", "myinstance");
+    }
+
+    private ApplicationXML checkCreateApplication(String filename, String appName) {
+        System.out.println("checkCreateApplication, fileName=" + filename);
+
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);
         String inputStreamString = new Scanner(input,"UTF-8").useDelimiter("\\A").next();
-        System.out.println("desc=" + inputStreamString);
+        System.out.println("create app desc=" + inputStreamString);
 
         Response response = null;
         try {
@@ -191,6 +343,7 @@ public class ApiTest {
                             Response.class);
 
         } catch (WebApplicationException ex) {
+            ex.printStackTrace();
             fail("Exception : " + ex);
         }
 
@@ -203,7 +356,162 @@ public class ApiTest {
         }
 
         assertNotNull(appCreated);
-        assertEquals(appCreated.getAppName(), "testapp");
+        assertEquals(appCreated.getAppName(), appName);
+
+        return appCreated;
+
+    }
+
+    private ApplicationVersionXML checkCreateApplicationVersion(String appId, String filename, String versionLabel) {
+        System.out.println("checkCreateApplicationVersion, appId=" + appId + ", fileName=" + filename);
+
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);
+        String inputStreamString = new Scanner(input,"UTF-8").useDelimiter("\\A").next();
+        System.out.println("create version desc=" + inputStreamString);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version")
+                    .request(MediaType.APPLICATION_XML)
+                    .post(Entity.xml(inputStreamString),
+                            Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        ApplicationVersionXML versionCreated = response.readEntity(ApplicationVersionXML.class);
+        System.out.println("versionCreated = " + versionCreated.getAppVerId());
+        System.out.println("versionCreated = " + versionCreated.getAppVerLabel());
+
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            fail("Status=" + response.getStatus());
+        }
+
+        assertNotNull(versionCreated);
+        assertEquals(versionCreated.getAppVerLabel(), versionLabel);
+
+        return versionCreated;
+
+    }
+
+    private ApplicationVersionInstanceXML checkCreateApplicationVersionInstance(String appId, String versionId, String filename, String instanceName) {
+        System.out.println("checkCreateApplicationVersionInstance, appId=" + appId + ", versionId=" + versionId + ", fileName=" + filename);
+
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("cloud-application-version-instance-deployment.xml");
+        String inputStreamString = new Scanner(input,"UTF-8").useDelimiter("\\A").next();
+        System.out.println("create instance desc=" + inputStreamString);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance")
+                    .request(MediaType.APPLICATION_XML)
+                    .post(Entity.xml(inputStreamString),
+                            Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        ApplicationVersionInstanceXML instanceCreated = response.readEntity(ApplicationVersionInstanceXML.class);
+        System.out.println("instanceCreated = " + instanceCreated.getInstanceId());
+        System.out.println("instanceCreated = " + instanceCreated.getInstanceName());
+
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            fail("Status=" + response.getStatus());
+        }
+
+        assertNotNull(instanceCreated);
+        assertEquals(instanceCreated.getInstanceName(), instanceName);
+
+        return instanceCreated;
+
+    }
+
+    private void checkDeleteApplication(String appId) {
+        System.out.println("checkDeleteApplication, appId=" + appId);
+
+        ApplicationXML app = checkGetApplication(appId, null);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId)
+                    .request(MediaType.APPLICATION_XML)
+                    .delete(Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        checkFindApplications(app.getAppName(),false);
+
+    }
+
+    private void checkDeleteApplicationVersion(String appId, String versionId) {
+        System.out.println("checkDeleteApplication, appId=" + appId + ", versionId=" + versionId);
+
+        ApplicationVersionXML version = checkGetApplicationVersion(appId, versionId, null);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId)
+                    .request(MediaType.APPLICATION_XML)
+                    .delete(Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        checkFindApplications(version.getAppVerLabel(),false);
+
+    }
+
+    private void checkDeleteApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        System.out.println("checkDeleteApplication, appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
+
+        ApplicationVersionInstanceXML instance = checkGetApplicationVersionInstance(appId, versionId, instanceId, null);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance/" + instanceId)
+                    .request(MediaType.APPLICATION_XML)
+                    .delete(Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        checkFindApplications(instance.getInstanceName(),false);
+
+    }
+    @Test
+    public void checkApplicationLifeCycle() {
+        System.out.println("checkApplicationLifeCycle ....");
+
+        // Test application creation
+        ApplicationXML appCreated = checkCreateApplication("cloud-application.xml", "testapp");
+        ApplicationVersionXML versionCreated = checkCreateApplicationVersion(appCreated.getAppId(), "cloud-application-version.xml", "7.0.0-SNAPSHOT");
+        ApplicationVersionInstanceXML instanceCreated = checkCreateApplicationVersionInstance(appCreated.getAppId(), versionCreated.getAppVerId(), "cloud-application-version-instance-deployment.xml", "test-for-demo");
+
+        // Test getters
+        checkGetApplication(appCreated.getAppId(), appCreated.getAppName());
+        checkGetApplicationVersion(versionCreated.getAppId(), versionCreated.getAppVerId(), versionCreated.getAppVerLabel());
+        checkGetApplicationVersionInstance(instanceCreated.getAppId(),instanceCreated.getVersionID(),instanceCreated.getInstanceId(),instanceCreated.getInstanceName());
+
+        // Test finders
+        checkFindApplications(appCreated.getAppName(),true);
+        checkFindApplicationVersions(versionCreated.getAppId(),versionCreated.getAppVerLabel(),true);
+        checkFindApplicationVersionInstances(instanceCreated.getAppId(),instanceCreated.getVersionID(), instanceCreated.getInstanceName(),true);
+
+        // Test deletes
+        checkDeleteApplicationVersionInstance(instanceCreated.getAppId(),instanceCreated.getVersionID(),instanceCreated.getInstanceId());
+        checkDeleteApplicationVersion(versionCreated.getAppId(), versionCreated.getAppVerId());
+        checkDeleteApplication(appCreated.getAppId());
     }
 
     @Test

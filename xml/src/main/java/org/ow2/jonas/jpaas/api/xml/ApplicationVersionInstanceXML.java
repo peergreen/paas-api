@@ -72,7 +72,7 @@ public class ApplicationVersionInstanceXML {
 	 * ApplicationVersionInstance sortedDeployabesLis
 	 */
 	@XmlElement
-	private List<DeployableXML> sortedDeployabesLis;
+	private List<DeployableXML> sortedDeployableList;
 
 	/**
 	 * ApplicationVersionInstance urlList
@@ -149,14 +149,6 @@ public class ApplicationVersionInstanceXML {
 		this.capabilities = capabilities;
 	}
 
-	public Map<DeployableXML, NodeXML> getDeployableTopologyMapping() {
-		return deployableTopologyMapping;
-	}
-
-	public void setDeployableTopologyMapping(
-			Map<DeployableXML, NodeXML> deployableTopologyMapping) {
-		this.deployableTopologyMapping = deployableTopologyMapping;
-	}
 
 	public List<String> getRequirements() {
 		return requirements;
@@ -166,13 +158,26 @@ public class ApplicationVersionInstanceXML {
 		this.requirements = requirements;
 	}
 
-	public List<DeployableXML> getSortedDeployabesLis() {
-		return sortedDeployabesLis;
+
+    public Map<DeployableXML, NodeXML> getDeployableTopologyMapping() {
+        return deployableTopologyMapping;
+    }
+
+    public void setDeployableTopologyMapping(
+            Map<DeployableXML, NodeXML> deployableTopologyMapping) {
+        this.deployableTopologyMapping = deployableTopologyMapping;
+    }
+
+
+
+    public List<DeployableXML> SortedDeployableList() {
+		return sortedDeployableList;
 	}
 
-	public void setSortedDeployabesLis(List<DeployableXML> sortedDeployabesLis) {
-		this.sortedDeployabesLis = sortedDeployabesLis;
+	public void setSortedDeployableList(List<DeployableXML> sortedDeployableList) {
+		this.sortedDeployableList = sortedDeployableList;
 	}
+
 
 	public List<URI> getUrlList() {
 		return urlList;

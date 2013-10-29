@@ -264,7 +264,7 @@ public class EnvironmentManagerResource implements EnvironmentRest {
             ApplicationVersionInstance applicationVersionInstance) {
         ApplicationVersionInstanceXML app = new ApplicationVersionInstanceXML();
         Map<DeployableXML, NodeXML> deployableTopologyMap = buildDeployableTopologyMap(applicationVersionInstance);
-        List<DeployableXML> sortedDeployabesLis = buildSortedDeployableList(applicationVersionInstance);
+        List<DeployableXML> sortedDeployableList = buildSortedDeployableList(applicationVersionInstance);
 
         app.setAppId(applicationVersionInstance.getAppId());
         app.setCapabilities(applicationVersionInstance.getCapabilities());
@@ -272,7 +272,7 @@ public class EnvironmentManagerResource implements EnvironmentRest {
         app.setInstanceId(applicationVersionInstance.getInstanceId());
         app.setInstanceName(applicationVersionInstance.getInstanceName());
         app.setRequirements(applicationVersionInstance.getRequirements());
-        app.setSortedDeployabesLis(sortedDeployabesLis);
+        app.setSortedDeployableList(sortedDeployableList);
         app.setState(Integer.toString(applicationVersionInstance.getState()));
         app.setTargetEnvId(applicationVersionInstance.getTargetEnvId());
         app.setUrlList(applicationVersionInstance.getUrlList());
@@ -453,7 +453,7 @@ public class EnvironmentManagerResource implements EnvironmentRest {
      */
     private NodeXML buildNode(Node node) {
         NodeXML nodeXML = new NodeXML();
-        nodeXML.setNodeCureentSize(node.getCurrentSize());
+        nodeXML.setNodeCurrentSize(node.getCurrentSize());
         nodeXML.setNodeID(node.getId());
         nodeXML.setNodeMaxSize(node.getMaxSize());
         nodeXML.setNodeMinSize(node.getMinSize());

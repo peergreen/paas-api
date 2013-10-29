@@ -61,7 +61,7 @@ public class NodeXML {
 		return nodeCurrentSize;
 	}
 
-	public void setNodeCureentSize(int nodeCurrentSize) {
+	public void setNodeCurrentSize(int nodeCurrentSize) {
 		this.nodeCurrentSize = nodeCurrentSize;
 	}
 

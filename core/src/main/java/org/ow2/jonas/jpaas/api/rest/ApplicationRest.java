@@ -83,7 +83,7 @@ public interface ApplicationRest {
 
 	/**
 	 * List application version instances Command: GET
-	 * /app/{appId}/version/{versionId}
+	 * /app/{appId}/version/{versionId}/instance
 	 * 
 	 * @param appId
 	 *            The application's ID
@@ -93,7 +93,7 @@ public interface ApplicationRest {
 	 */
 
 	@GET
-	@Path("{appId}/version/{versionId}")
+	@Path("{appId}/version/{versionId}/instance")
 	Response findApplicationVersionInstances(@PathParam("appId") String appId,
 			@PathParam("versionId") String versionId);
 	
@@ -132,6 +132,7 @@ public interface ApplicationRest {
 	@Path("{appId}/version/{versionId}/instance/{instanceId}/action/stop")
 	Response stopApplicationVersionInstance(@PathParam("appId") String appId,
 			@PathParam("versionId") String versionId,@PathParam("instanceId") String instanceId);
+
 	/**
 	 * Describe application.
 	 * Command: GET /app/{appId}
@@ -145,8 +146,40 @@ public interface ApplicationRest {
 	@Path("{appId}")
 	@Produces(MediaType.APPLICATION_XML)
 	Response describeApplication(@PathParam("appId") String appId);
-	
-	/**
+
+    /**
+     * Describe application version
+     * Command: GET /app/{appId}/version/{versionId}
+     *
+     * @param appId
+     *           The application's ID
+     * @param versionId
+     *           The application's version ID
+     * @return XML file An: The Cloud Application Descriptor
+     */
+    @GET
+    @Path("{appId}/version/{versionId}")
+    @Produces(MediaType.APPLICATION_XML)
+    Response describeApplicationVersion(@PathParam("appId") String appId, @PathParam("versionId") String versionId);
+
+    /**
+     * Describe application version instance
+     * Command: GET /app/{appId}/version/{versionId}/instance/{instanceId}
+     *
+     * @param appId
+     *           The application's ID
+     * @param versionId
+     *           The application's version ID
+     * @param instanceId
+     *           The application's version instance ID
+     * @return XML file An: The Cloud Application Descriptor
+     */
+    @GET
+    @Path("{appId}/version/{versionId}/instance/{instanceId}")
+    @Produces(MediaType.APPLICATION_XML)
+    Response describeApplicationVersionInstance(@PathParam("appId") String appId, @PathParam("versionId") String versionId, @PathParam("instanceId") String instanceId);
+
+    /**
 	 * Delete application. Removes all existing versions.
 	 * Command: DELETE /app/{appId}
 	 * 

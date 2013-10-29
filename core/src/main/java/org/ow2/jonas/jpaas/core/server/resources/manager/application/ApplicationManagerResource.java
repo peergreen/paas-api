@@ -85,6 +85,8 @@ public class ApplicationManagerResource implements ApplicationRest {
                     .entity(new GenericEntity<ApplicationXML>(appXML) {
                     }).type(MediaType.APPLICATION_XML_TYPE).build();
         } else {
+            logger.info("Failed to create the Application!");
+
             error.setValue("Failed to create the Application!");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
@@ -99,7 +101,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         ApplicationVersion appVer=null;
         try {
-            appVer = appManager.createApplicationVersion(applicationVersionDescriptor);
+            appVer = appManager.createApplicationVersion(appId, applicationVersionDescriptor);
         } catch (ApplicationManagerBeanException e) {
             error.setValue("Failed to create the Application Version : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -108,12 +110,15 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         if (appVer != null) {
             ApplicationVersionXML appVerXML = new ApplicationVersionXML();
-            appVerXML.setAppVerId(appVer.getAppId());
+            appVerXML.setAppId(appVer.getAppId());
+            appVerXML.setAppVerId(appVer.getVersionId());
             appVerXML.setAppVerLabel(appVer.getVersionLabel());
             return Response.status(Response.Status.OK)
                     .entity(new GenericEntity<ApplicationVersionXML>(appVerXML) {
                     }).type(MediaType.APPLICATION_XML_TYPE).build();
         } else {
+            logger.info("Failed to create the Application Version!");
+
             error.setValue("Failed to create the Application Version!");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
@@ -134,10 +139,10 @@ public class ApplicationManagerResource implements ApplicationRest {
             Element deploymentNode = (Element) appXml.getElementsByTagName("deployment").item(0);
 
             //Add the NameSpace to fix a bug
-            cloudApplicationNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
-                    "http://jonas.ow2.org/ns/cloud/application/1.0");
-            deploymentNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
-                    "http://jonas.ow2.org/ns/cloud/deployment/1.0");
+            //cloudApplicationNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
+            //        "http://jonas.ow2.org/ns/cloud/application/1.0");
+            //deploymentNode.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns",
+            //        "http://jonas.ow2.org/ns/cloud/deployment/1.0");
 
             registry = DOMImplementationRegistry.newInstance();
             DOMImplementationLS impl =
@@ -157,9 +162,10 @@ public class ApplicationManagerResource implements ApplicationRest {
             writer.write(deploymentNode, lsOutput);
             String deployment = stringWriter.toString();
 
-            appVerIns = appManager.createApplicationVersionInstance(cloudApplication, deployment);
+            appVerIns = appManager.createApplicationVersionInstance(appId, versionId, cloudApplication, deployment);
 
         } catch (Exception e) {
+            logger.info("Failed to create the Application Version instance ! - " + e.getMessage());
             error.setValue("Failed to create the Application Version Instance : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
@@ -170,12 +176,14 @@ public class ApplicationManagerResource implements ApplicationRest {
             ApplicationVersionInstanceXML appVerInsXML = new ApplicationVersionInstanceXML();
 
             appVerInsXML.setAppId(appVerIns.getAppId());
+            appVerInsXML.setVersionID(appVerIns.getVersionId());
             appVerInsXML.setInstanceId(appVerIns.getInstanceId());
             appVerInsXML.setInstanceName(appVerIns.getInstanceName());
             return Response.status(Response.Status.OK)
                     .entity(new GenericEntity<ApplicationVersionInstanceXML>(appVerInsXML) {
                     }).type(MediaType.APPLICATION_XML_TYPE).build();
         } else {
+            logger.info("Failed to create the Application Version instance !");
             error.setValue("Failed to create the Application Version Instance!");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
@@ -208,7 +216,7 @@ public class ApplicationManagerResource implements ApplicationRest {
     }
 
     @Override
-    public Response findApplicationVersions(@PathParam("appId") String appId) {
+    public Response findApplicationVersions(String appId) {
         logger.info("Get applications version with appId="+ appId);
         List<ApplicationVersion> listAppVer = new ArrayList<ApplicationVersion>();
         listAppVer = appManager.findApplicationVersion(appId);
@@ -231,9 +239,7 @@ public class ApplicationManagerResource implements ApplicationRest {
      * {@inheritDoc}
      */
     @Override
-    public Response findApplicationVersionInstances(
-            @PathParam("appId") String appId,
-            @PathParam("versionId") String versionId) {
+    public Response findApplicationVersionInstances(String appId, String versionId) {
         logger.info("Get applications version instance with appId=" + appId + ", versionId=" + versionId);
         List<ApplicationVersionInstance> listAppVerInstances = new ArrayList<ApplicationVersionInstance>();
         listAppVerInstances = appManager.findApplicationVersionsInstances(appId, versionId);
@@ -278,6 +284,31 @@ public class ApplicationManagerResource implements ApplicationRest {
     }
 
     @Override
+    public Response stopApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        logger.info("Stop application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
+
+        Future<ApplicationVersionInstance> instance = null;
+        try {
+            instance = appManager.stopApplicationVersionInstance(appId, versionId, instanceId);
+        } catch (ApplicationManagerBeanException e) {
+            error.setValue("Failed to stop the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+        ApplicationVersionInstanceXML appVersionInstanceXML=null;
+        try {
+            appVersionInstanceXML = buildApplicationVersionInstance(instance.get());
+        } catch (InterruptedException | ExecutionException e) {
+            error.setValue("Failed to stop the Application Instance : " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
     public Response describeApplication(String appId) {
         org.ow2.jonas.jpaas.manager.api.Application app = null;
         app = appManager.getApplication(appId);
@@ -287,23 +318,63 @@ public class ApplicationManagerResource implements ApplicationRest {
     }
 
     @Override
+    public Response describeApplicationVersion(String appId, String versionId) {
+        org.ow2.jonas.jpaas.manager.api.ApplicationVersion version = null;
+        version = appManager.getApplicationVersion(appId, versionId);
+        ApplicationVersionXML versionXML = buildApplicationVersion(version);
+        return Response.status(Response.Status.OK)
+                .entity(versionXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+    @Override
+    public Response describeApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance instance = null;
+        instance = appManager.getApplicationVersionInstance(appId, versionId, instanceId);
+        ApplicationVersionInstanceXML instanceXML = buildApplicationVersionInstance(instance);
+        return Response.status(Response.Status.OK)
+                .entity(instanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+    }
+
+
+    @Override
     public Response deleteApplication(String appId) {
         logger.info("Delete application with appId="+ appId);
-        appManager.deleteApplication(appId);
+
+        try {
+            appManager.deleteApplication(appId);
+        } catch (ApplicationManagerBeanException e) {
+            error.setValue("Failed to delete the Application : " + appId + " - " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
         return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
     @Override
     public Response deleteApplicationVersion(String appId, String versionId) {
         logger.info("Delete application with appId="+ appId + ", versionId=" + versionId);
-        appManager.deleteApplicationVersion(appId, versionId);
+
+        try {
+            appManager.deleteApplicationVersion(appId,versionId);
+        } catch (ApplicationManagerBeanException e) {
+            error.setValue("Failed to delete the Application : " + appId + "/" + versionId + " - " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
+
         return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
     @Override
     public Response deleteApplicationVersionInstance(String appId, String versionId, String instanceId) {
         logger.info("Delete application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
-        appManager.deleteApplicationVersionInstance(appId, versionId, instanceId);
+        try {
+            appManager.deleteApplicationVersionInstance(appId,versionId,instanceId);
+        } catch (ApplicationManagerBeanException e) {
+            error.setValue("Failed to delete the Application : " + appId + "/" + versionId + "/" + instanceId + " - " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
         return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
@@ -375,16 +446,6 @@ public class ApplicationManagerResource implements ApplicationRest {
                 .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
-    @Override
-    public Response stopApplicationVersionInstance(String appId, String versionId, String instanceId) {
-        logger.info("Stop application with appId="+ appId + ", versionId=" + versionId, "instanceId=" + instanceId);
-        // TODO add the arguments
-        appManager.stopApplicationVersionInstance();
-
-
-        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
     /**
      * builds the XML representation for an Application
      *
@@ -393,12 +454,16 @@ public class ApplicationManagerResource implements ApplicationRest {
      * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
     private ApplicationXML buildApplication(final org.ow2.jonas.jpaas.manager.api.Application app) {
-        ApplicationXML xmlApp = new ApplicationXML();
+        ApplicationXML xmlApp = null;
+        if (app != null) {
+            xmlApp = new ApplicationXML();
+            xmlApp.setAppId(app.getAppId());
+            xmlApp.setAppName(app.getName());
 
-        xmlApp.setAppId(app.getAppId());
-        xmlApp.setAppName(app.getName());
+        }
 
         return xmlApp;
+
     }
 
     /**
@@ -413,7 +478,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         xmlVersionApp.setAppId(appVersion.getAppId());
         xmlVersionApp.setAppVerId(appVersion.getVersionId());
-        xmlVersionApp.setAppVerLabel(appVersion.getVersionId());
+        xmlVersionApp.setAppVerLabel(appVersion.getVersionLabel());
 
         return xmlVersionApp;
     }
