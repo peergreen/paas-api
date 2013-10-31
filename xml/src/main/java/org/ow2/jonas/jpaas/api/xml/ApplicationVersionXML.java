@@ -1,9 +1,9 @@
 package org.ow2.jonas.jpaas.api.xml;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
+import java.net.URI;
+import java.util.List;
+import java.util.Properties;
 
 @XmlRootElement(name = "applicationVersion")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -14,15 +14,22 @@ public class ApplicationVersionXML {
 	 */
 	@XmlAttribute
 	private String appId;
+
+    @XmlElement
+    private List<String> requirements;
+
+    /**
+     * ApplicationVersionInstance sortedDeployabesLis
+     */
+    @XmlElement
+    private List<DeployableXML> sortedDeployableList;
+
+    /**
+     * ApplicationVersionInstance capabilities
+     */
+    @XmlElement
+    private List<Properties> capabilities;
 	
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-
 	/**
 	 * Application Version id
 	 */
@@ -35,7 +42,17 @@ public class ApplicationVersionXML {
 	@XmlAttribute
 	private String appVerLabel;
 
-	public String getAppVerId() {
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+
+    public String getAppVerId() {
 		return appVerId;
 	}
 
@@ -51,6 +68,29 @@ public class ApplicationVersionXML {
 		this.appVerLabel = appVerLabel;
 	}
 
+    public List<Properties> getCapabilities() {
+        return capabilities;
+    }
 
+    public void setCapabilities(List<Properties> capabilities) {
+        this.capabilities = capabilities;
+    }
+
+
+    public List<String> getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(List<String> requirements) {
+        this.requirements = requirements;
+    }
+
+    public List<DeployableXML> getSortedDeployableList() {
+        return sortedDeployableList;
+    }
+
+    public void setSortedDeployableList(List<DeployableXML> sortedDeployableList) {
+        this.sortedDeployableList = sortedDeployableList;
+    }
 
 }

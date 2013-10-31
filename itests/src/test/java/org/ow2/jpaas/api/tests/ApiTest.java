@@ -28,8 +28,11 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -489,6 +492,38 @@ public class ApiTest {
         checkFindApplications(instance.getInstanceName(),false);
 
     }
+
+    private void checkUploadDeployable(String appId, String versionId, String deployableId, String filename) {
+        System.out.println("checkUploadDeployable, appId=" + appId + ", versionId=" + versionId + ", deployableId=" + deployableId);
+
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);
+
+        Response response = null;
+        try {
+            String target = BASE_URL_API + "upload/app/" + appId + "/version/" + versionId + "/deployable/" + deployableId ;
+
+            System.out.println("target=" + target);
+            response = client.target(target)
+                    .request(MediaType.APPLICATION_XML)
+//                    .put(Entity.text("toto"), Response.class);
+                    .put(Entity.entity(input, MediaType.APPLICATION_OCTET_STREAM), Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+        System.out.println("response=" + response);
+
+        assertEquals(response.getStatusInfo().getStatusCode(), Response.Status.OK.getStatusCode());
+
+        DeployableXML deployableXML = response.readEntity(DeployableXML.class);
+        System.out.println("deployableXML = " + deployableXML);
+
+        assertEquals(deployableXML.getDeployableId(),deployableId);
+        assertEquals(deployableXML.getUploaded(),true);
+
+    }
+
     @Test
     public void checkApplicationLifeCycle() {
         System.out.println("checkApplicationLifeCycle ....");
@@ -496,6 +531,18 @@ public class ApiTest {
         // Test application creation
         ApplicationXML appCreated = checkCreateApplication("cloud-application.xml", "testapp");
         ApplicationVersionXML versionCreated = checkCreateApplicationVersion(appCreated.getAppId(), "cloud-application-version.xml", "7.0.0-SNAPSHOT");
+
+        boolean foundDeployablePostgreSQLDriver=false;
+        List <DeployableXML> deployables = versionCreated.getSortedDeployableList();
+        for (DeployableXML deployable:deployables) {
+            if (deployable.getDeployableName().equals("postgresql-8.4-703.jdbc4.jar")){
+                checkUploadDeployable(appCreated.getAppId(), versionCreated.getAppVerId(), deployable.getDeployableId(), "postgresql-8.4-703.jdbc4.jar");
+                foundDeployablePostgreSQLDriver=true;
+                break;
+            }
+        }
+        assertTrue(foundDeployablePostgreSQLDriver);
+
         ApplicationVersionInstanceXML instanceCreated = checkCreateApplicationVersionInstance(appCreated.getAppId(), versionCreated.getAppVerId(), "cloud-application-version-instance-deployment.xml", "test-for-demo");
 
         // Test getters
@@ -505,13 +552,14 @@ public class ApiTest {
 
         // Test finders
         checkFindApplications(appCreated.getAppName(),true);
-        checkFindApplicationVersions(versionCreated.getAppId(),versionCreated.getAppVerLabel(),true);
-        checkFindApplicationVersionInstances(instanceCreated.getAppId(),instanceCreated.getVersionID(), instanceCreated.getInstanceName(),true);
+        checkFindApplicationVersions(versionCreated.getAppId(), versionCreated.getAppVerLabel(), true);
+        checkFindApplicationVersionInstances(instanceCreated.getAppId(), instanceCreated.getVersionID(), instanceCreated.getInstanceName(), true);
 
         // Test deletes
-        checkDeleteApplicationVersionInstance(instanceCreated.getAppId(),instanceCreated.getVersionID(),instanceCreated.getInstanceId());
+        checkDeleteApplicationVersionInstance(instanceCreated.getAppId(), instanceCreated.getVersionID(), instanceCreated.getInstanceId());
         checkDeleteApplicationVersion(versionCreated.getAppId(), versionCreated.getAppVerId());
         checkDeleteApplication(appCreated.getAppId());
+
     }
 
     @Test

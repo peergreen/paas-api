@@ -104,6 +104,8 @@ public class EnvironmentManagerClient {
 	 * 
 	 * @return a naming Context
 	 */
+
+    /*
 	static Context getInitialContext() {
 		Context initialContext = null;
 		Hashtable<String, Object> env = new Hashtable<String, Object>();
@@ -118,5 +120,6 @@ public class EnvironmentManagerClient {
 		return initialContext;
 
 	}
+	*/
 
 }

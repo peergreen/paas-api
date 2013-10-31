@@ -9,6 +9,7 @@ import org.ow2.jonas.jpaas.api.task.TaskException;
 import org.ow2.jonas.jpaas.api.xml.*;
 import org.ow2.jonas.jpaas.core.ejb.client.EnvironmentManagerClient;
 import org.ow2.jonas.jpaas.core.server.resources.exception.NotImplementedException;
+import org.ow2.jonas.jpaas.core.server.resources.manager.common.Util;
 import org.ow2.jonas.jpaas.core.server.task.CreateEnvironmentTask;
 import org.ow2.jonas.jpaas.api.xml.ErrorXML;
 import org.ow2.jonas.jpaas.core.server.task.TaskManager;
@@ -108,7 +109,7 @@ public class EnvironmentManagerResource implements EnvironmentRest {
 
         if (listEnvs != null) {
             for (org.ow2.jonas.jpaas.manager.api.Environment listEnv : listEnvs) {
-                EnvironmentXML env = buildEnvironment(listEnv);
+                EnvironmentXML env = Util.buildEnvironment(listEnv);
                 if (env != null) {
                     listEnvsXML.add(env);
                 }
@@ -184,7 +185,7 @@ public class EnvironmentManagerResource implements EnvironmentRest {
     public Response getEnvironment(String envid) {
         logger.info("Get env: " + envid);
         Environment env = envManager.getEnvironment(envid);
-        EnvironmentXML envXML = buildEnvironment(env);
+        EnvironmentXML envXML = Util.buildEnvironment(env);
         return Response.status(Response.Status.OK)
                 .entity(envXML).type(MediaType.APPLICATION_XML_TYPE).build();
 
@@ -206,264 +207,5 @@ public class EnvironmentManagerResource implements EnvironmentRest {
         // GenericEntity<List<ApplicationVersionInstance>>(listInstances){}).build();
     }
 
-    // XML elements related methods
 
-    /**
-     * builds the XML representation for an Environment
-     *
-     * @param env The {@link org.ow2.jonas.jpaas.manager.api.Environment} object
-     * @return an {@link org.ow2.jonas.jpaas.manager.api.Environment} XML representation
-     */
-    private EnvironmentXML buildEnvironment(final org.ow2.jonas.jpaas.manager.api.Environment env) {
-        EnvironmentXML xmlEnv = new EnvironmentXML();
-
-        TopologyXML xmlTopo = buildTopology(env);
-        List<ApplicationVersionInstanceXML> listApplicationVersionInstanceXML = buildlistApplicationVersionInstance(env);
-
-        xmlEnv.setEnvDesc(env.getEnvDesc());
-        xmlEnv.setEnvId(env.getEnvId());
-        xmlEnv.setEnvListApplicationVersionInstance(listApplicationVersionInstanceXML);
-        xmlEnv.setEnvName(env.getEnvName());
-        xmlEnv.setEnvState(env.getState());
-        xmlEnv.setEnvTopology(xmlTopo);
-
-        return xmlEnv;
-    }
-
-    /**
-     * builds the XML representation for listApplicationVersionInstance
-     *
-     * @param env
-     * @return List<ApplicationVersionInstanceXML>
-     */
-    private List<ApplicationVersionInstanceXML> buildlistApplicationVersionInstance(
-            org.ow2.jonas.jpaas.manager.api.Environment env) {
-        List<ApplicationVersionInstanceXML> listApplicationVersionInstanceXML = new ArrayList<ApplicationVersionInstanceXML>();
-        List<ApplicationVersionInstance> listApplicationVersionInstance = env
-                .getListApplicationVersionInstance();
-
-        if (listApplicationVersionInstance != null) {
-            for (ApplicationVersionInstance applicationVersionInstance : listApplicationVersionInstance) {
-                ApplicationVersionInstanceXML app = buildApplicationVersionInstance(applicationVersionInstance);
-                if (app != null) {
-                    listApplicationVersionInstanceXML.add(app);
-                }
-            }
-        }
-
-        return listApplicationVersionInstanceXML;
-    }
-
-    /**
-     * builds the XML representation for applicationVersionInstance
-     *
-     * @param applicationVersionInstance
-     * @return ApplicationVersionInstanceXML
-     */
-    private ApplicationVersionInstanceXML buildApplicationVersionInstance(
-            ApplicationVersionInstance applicationVersionInstance) {
-        ApplicationVersionInstanceXML app = new ApplicationVersionInstanceXML();
-        Map<DeployableXML, NodeXML> deployableTopologyMap = buildDeployableTopologyMap(applicationVersionInstance);
-        List<DeployableXML> sortedDeployableList = buildSortedDeployableList(applicationVersionInstance);
-
-        app.setAppId(applicationVersionInstance.getAppId());
-        app.setCapabilities(applicationVersionInstance.getCapabilities());
-        app.setDeployableTopologyMapping(deployableTopologyMap);
-        app.setInstanceId(applicationVersionInstance.getInstanceId());
-        app.setInstanceName(applicationVersionInstance.getInstanceName());
-        app.setRequirements(applicationVersionInstance.getRequirements());
-        app.setSortedDeployableList(sortedDeployableList);
-        app.setState(Integer.toString(applicationVersionInstance.getState()));
-        app.setTargetEnvId(applicationVersionInstance.getTargetEnvId());
-        app.setUrlList(applicationVersionInstance.getUrlList());
-        app.setVersionID(applicationVersionInstance.getVersionId());
-
-        return app;
-    }
-
-    /**
-     * builds the XML representation for SortedDeployableList
-     *
-     * @param applicationVersionInstance
-     * @return List<DeployableXML>
-     */
-    private List<DeployableXML> buildSortedDeployableList(
-            ApplicationVersionInstance applicationVersionInstance) {
-        List<DeployableXML> depListXML = new ArrayList<DeployableXML>();
-
-        if (applicationVersionInstance == null) {
-            System.out.println("No applicationVersionInstance specified!");
-            depListXML = null;
-        } else {
-            List<Deployable> depList = applicationVersionInstance
-                    .getSortedDeployablesList();
-
-            if (depList != null) {
-                for (Deployable dep : depList) {
-                    DeployableXML depXML = buildDeployable(dep);
-                    if (depXML != null) {
-                        depListXML.add(depXML);
-                    }
-                }
-            }
-        }
-        return depListXML;
-    }
-
-    /**
-     * builds the XML representation for DeployableTopologyMap
-     *
-     * @param applicationVersionInstance
-     * @return Map<DeployableXML, NodeXML>
-     */
-    private Map<DeployableXML, NodeXML> buildDeployableTopologyMap(
-            ApplicationVersionInstance applicationVersionInstance) {
-        // TODO Auto-generated method stub
-        Map<DeployableXML, NodeXML> deployableTopologyMap = new HashMap<DeployableXML, NodeXML>();
-        if (applicationVersionInstance == null) {
-            System.out.println("No applicationVersionInstance specified!");
-            deployableTopologyMap = null;
-        } else {
-            Map<Deployable, Node> topologyMap = applicationVersionInstance
-                    .getDeployableTopologyMapping();
-            if (topologyMap != null) {
-                for (Map.Entry<Deployable, Node> entry : topologyMap.entrySet()) {
-                    DeployableXML depXML = buildDeployable(entry.getKey());
-                    NodeXML nodeXML = buildNode(entry.getValue());
-                    if (depXML != null && nodeXML != null)
-                        deployableTopologyMap.put(depXML, nodeXML);
-                }
-            }
-        }
-        return deployableTopologyMap;
-    }
-
-    /**
-     * builds the XML representation for Deployable
-     *
-     * @param dep
-     * @return DeployableXML
-     */
-    private DeployableXML buildDeployable(Deployable dep) {
-        DeployableXML depXML = new DeployableXML();
-        depXML.setDeployableId(dep.getDeployabledId());
-        depXML.setDeployableName(dep.getDeployableName());
-        depXML.setLocationURL(dep.getLocationUrl());
-        depXML.setRequirements(dep.getRequirements());
-        depXML.setSlaEnforcement(dep.getSlaEnforcement());
-        depXML.setUploaded(dep.getUploaded());
-        return depXML;
-    }
-
-    /**
-     * builds the XML representation for Topology
-     *
-     * @param env
-     * @return TopologyXML
-     */
-    private TopologyXML buildTopology(final org.ow2.jonas.jpaas.manager.api.Environment env) {
-        Topology topo = env.getTopology();
-        TopologyXML xmlTopo = new TopologyXML();
-        List<NodeXML> topoListNode = buildListNode(topo);
-        List<RelationshipXML> topoRelationShipList = buildRelationShipList(topo);
-
-        xmlTopo.setTopoListNode(topoListNode);
-        xmlTopo.setTopoRelationShipList(topoRelationShipList);
-
-        return xmlTopo;
-    }
-
-    /**
-     * builds the XML representation for RelationShipList
-     *
-     * @param topo
-     * @return List<RelationshipXML>
-     */
-    private List<RelationshipXML> buildRelationShipList(final Topology topo) {
-        List<RelationshipXML> topoRelationShipListXML = new ArrayList<RelationshipXML>();
-
-        if (topo == null) {
-            System.out
-                    .println("The topology element is not defined in the Environment!!");
-            topoRelationShipListXML = null;
-        } else {
-            List<Relationship> topoRelationShipList = topo
-                    .getRelationShipList();
-
-            if (topoRelationShipList != null) {
-                for (Relationship relation : topoRelationShipList) {
-                    RelationshipXML relationXML = buildRelationShip(relation);
-                    if (relationXML != null) {
-                        topoRelationShipListXML.add(relationXML);
-                    }
-                }
-            }
-        }
-        return topoRelationShipListXML;
-    }
-
-    /**
-     * builds the XML representation for RelationShip
-     *
-     * @param relation
-     * @return RelationshipXML
-     */
-    private RelationshipXML buildRelationShip(Relationship relation) {
-        RelationshipXML relationXML = new RelationshipXML();
-        if (relation instanceof Connector)
-            relationXML.setRelationShipType("Connector");
-        else if (relation instanceof Datasource)
-            relationXML.setRelationShipType("Datasource");
-        // TODO Voir quels sont les attributs d'une relationShip
-        return relationXML;
-    }
-
-    /**
-     * builds the XML representation for ListNode
-     *
-     * @param topo
-     * @return List<NodeXML>
-     */
-    private List<NodeXML> buildListNode(final Topology topo) {
-        List<NodeXML> topoListNodeXML = new ArrayList<NodeXML>();
-        if (topo == null) {
-            System.out
-                    .println("The topology element is not defined in the Environment!!");
-            topoListNodeXML = null;
-        } else {
-            List<Node> topoListNode = topo.getNodeList();
-
-            if (topoListNode != null) {
-                for (Node node : topoListNode) {
-                    NodeXML nodeXML = buildNode(node);
-                    if (nodeXML != null) {
-                        topoListNodeXML.add(nodeXML);
-                    }
-                }
-            }
-        }
-        return topoListNodeXML;
-    }
-
-    /**
-     * builds the XML representation for a Node
-     *
-     * @param node
-     * @return NodeXML
-     */
-    private NodeXML buildNode(Node node) {
-        NodeXML nodeXML = new NodeXML();
-        nodeXML.setNodeCurrentSize(node.getCurrentSize());
-        nodeXML.setNodeID(node.getId());
-        nodeXML.setNodeMaxSize(node.getMaxSize());
-        nodeXML.setNodeMinSize(node.getMinSize());
-        nodeXML.setNodeName(node.getName());
-        if (node instanceof JkRouter)
-            nodeXML.setNodeType("Router");
-        else if (node instanceof JonasContainer)
-            nodeXML.setNodeType("Jonas");
-        else if (node instanceof ExternalDatabase)
-            nodeXML.setNodeType("Database");
-        return nodeXML;
-    }
 }

@@ -170,7 +170,7 @@ public class ApplicationVersionInstanceXML {
 
 
 
-    public List<DeployableXML> SortedDeployableList() {
+    public List<DeployableXML> getSortedDeployableList() {
 		return sortedDeployableList;
 	}
 

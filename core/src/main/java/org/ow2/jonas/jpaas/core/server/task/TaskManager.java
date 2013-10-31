@@ -107,7 +107,7 @@ public class TaskManager {
     private void refresh() {
         logger.info("Refresh tasks list");
         for (Task task : tasks.values()) {
-            registerTask(task);
+            refreshTask(task);
         }
     }
 

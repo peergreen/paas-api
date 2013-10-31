@@ -14,6 +14,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
+import org.ow2.util.log.Log;
+import org.ow2.util.log.LogFactory;
 
 /**
  * ApplicationManagerClient is the client class used to invoke operations from
@@ -29,6 +31,7 @@ public class ApplicationManagerClient {
 	final private static String providerURL = "rmi://localhost:1099";
 	final private static String ejbName = "ApplicationManagerBean";
 	*/
+    private Log logger = LogFactory.getLog(ApplicationManagerClient.class);
 
 
     private static ApplicationManagerClient singleton;
@@ -61,10 +64,10 @@ public class ApplicationManagerClient {
             if (service instanceof ApplicationManager) {
                 applicationManagerService = (ApplicationManager) service;
             }
-            System.out.println("service: " + applicationManagerService);
+            logger.debug("service: " + applicationManagerService);
 
         } catch (Exception e) {
-            System.out.println("error: " + e);
+            logger.error(e.getMessage());
         }
     }
 

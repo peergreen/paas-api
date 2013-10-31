@@ -108,4 +108,12 @@ public class DeployableXML {
 		this.requirements = requirements;
 	}
 
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Deployable [id=" + deployableId + ", name=" + deployableName + ", locationURL=" + locationURL + ", uploaded=" + uploaded +"] \n" ;
+
+        return msg;
+    }
 }
