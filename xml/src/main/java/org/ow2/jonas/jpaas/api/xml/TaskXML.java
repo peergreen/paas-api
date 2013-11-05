@@ -32,7 +32,7 @@ public class TaskXML {
     private String operationName;
 
     @XmlElement
-    private List<LinkXML> link;
+    private List<LinkXML> links;
 
     @XmlElement
     private OwnerXML owner;
@@ -76,12 +76,12 @@ public class TaskXML {
 		this.endTime = endTime;
 	}
 
-	public List<LinkXML> getLink() {
-		return link;
+	public List<LinkXML> getLinks() {
+		return links;
 	}
 
-	public void setLink(List<LinkXML> link) {
-		this.link = link;
+	public void setLinks(List<LinkXML> links) {
+		this.links = links;
 	}
 
     public String getOperationName() {
@@ -107,11 +107,11 @@ public class TaskXML {
         String msg = prefix + "Task[id=" + id + ", name=" + operationName + ", status=" + status + ", startTime=" + startTime + ", endTime=" + endTime + "\n" ;
 
         msg += owner.toString(prefix + "   ") + "\n";
-        for (LinkXML myLink :  link)    {
+        for (LinkXML myLink :  links)    {
             msg += myLink.toString(prefix + "   ") + "\n";
         }
 
-        msg += "\n";
+        msg += prefix + "]\n";
 
         return msg;
     }

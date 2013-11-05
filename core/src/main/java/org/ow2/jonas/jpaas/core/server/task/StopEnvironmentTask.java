@@ -1,8 +1,5 @@
 package org.ow2.jonas.jpaas.core.server.task;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import org.ow2.jonas.jpaas.api.task.Status;
 import org.ow2.jonas.jpaas.api.task.Task;
 import org.ow2.jonas.jpaas.api.xml.OwnerXML;
@@ -10,34 +7,23 @@ import org.ow2.jonas.jpaas.core.server.resources.manager.common.Util;
 import org.ow2.jonas.jpaas.manager.api.Environment;
 
 import javax.ws.rs.core.MediaType;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class CreateEnvironmentTask extends AbstractTask implements Task {
-
-    private String environmentTemplateDescriptor;
+public class StopEnvironmentTask extends AbstractTask implements Task {
 
     private Future<Environment> environment;
 
 
-    public static final String TASK_NAME = "task:create-environment";
+    public static final String TASK_NAME = "task:stop-environment";
 
-    public CreateEnvironmentTask(String environmentTemplateDescriptor,
-                                 Future<Environment> environment, String baseUrl) {
+    public StopEnvironmentTask(Future<Environment> environment, String baseUrl) {
         super(TASK_NAME, baseUrl);
-        this.environmentTemplateDescriptor = environmentTemplateDescriptor;
         this.environment = environment;
 
         this.setStatus(Status.RUNNING);
         TaskManager.getSingleton().registerTask(this);
 
-    }
-
-    public String getEnvironmentTemplateDescriptor() {
-        return environmentTemplateDescriptor;
-    }
-
-    public void setEnvironmentTemplateDescriptor(
-            String environmentTemplateDescriptor) {
-        this.environmentTemplateDescriptor = environmentTemplateDescriptor;
     }
 
     public Future<Environment> getEnvironment() {

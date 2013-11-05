@@ -20,77 +20,52 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationVersionInstanceXML {
 
-	/**
-	 * ApplicationVersionInstance ID
-	 */
+    @XmlAttribute
+    private String type;
+
+    @XmlAttribute
+    private String href;
+
 	@XmlAttribute
 	private String appId;
 
-	/**
-	 * ApplicationVersionInstance instanceID
-	 */
+    @XmlAttribute
+    private String versionId;
+
 	@XmlAttribute
 	private String instanceId;
 
-	/**
-	 * ApplicationVersionInstance instanceName
-	 */
 	@XmlAttribute
 	private String instanceName;
 
-	/**
-	 * ApplicationVersionInstance state
-	 */
 	@XmlAttribute
 	private String state;
 
-	/**
-	 * ApplicationVersionInstance target environment ID
-	 */
 	@XmlAttribute
 	private String targetEnvId;
 
-	/**
-	 * ApplicationVersionInstance version ID
-	 */
-	@XmlAttribute
-	private String versionID;
 
-	/**
-	 * ApplicationVersionInstance deployableTopologyMapping
-	 */
 	@XmlElement
 	private Map<DeployableXML, NodeXML> deployableTopologyMapping;
 
-	/**
-	 * ApplicationVersionInstance requirements
-	 */
 	@XmlElement
 	private List<String> requirements;
 
-	/**
-	 * ApplicationVersionInstance sortedDeployabesLis
-	 */
 	@XmlElement
 	private List<DeployableXML> sortedDeployableList;
 
-	/**
-	 * ApplicationVersionInstance urlList
-	 */
 	@XmlElement
 	private List<URI> urlList;
 
-	/**
-	 * ApplicationVersionInstance capabilities
-	 */
 	@XmlElement
 	private List<Properties> capabilities;
 
-	/**
-	 * Default constructor
-	 */
-	public ApplicationVersionInstanceXML() {
+    @XmlElement
+    private List<LinkXML> links;
 
+
+
+    public ApplicationVersionInstanceXML() {
 	}
 
 	public String getAppId() {
@@ -133,12 +108,12 @@ public class ApplicationVersionInstanceXML {
 		this.targetEnvId = targetEnvId;
 	}
 
-	public String getVersionID() {
-		return versionID;
+	public String getVersionId() {
+		return versionId;
 	}
 
-	public void setVersionID(String versionID) {
-		this.versionID = versionID;
+	public void setVersionId(String versionId) {
+		this.versionId = versionId;
 	}
 
 	public List<Properties> getCapabilities() {
@@ -168,8 +143,6 @@ public class ApplicationVersionInstanceXML {
         this.deployableTopologyMapping = deployableTopologyMapping;
     }
 
-
-
     public List<DeployableXML> getSortedDeployableList() {
 		return sortedDeployableList;
 	}
@@ -177,7 +150,6 @@ public class ApplicationVersionInstanceXML {
 	public void setSortedDeployableList(List<DeployableXML> sortedDeployableList) {
 		this.sortedDeployableList = sortedDeployableList;
 	}
-
 
 	public List<URI> getUrlList() {
 		return urlList;
@@ -187,4 +159,51 @@ public class ApplicationVersionInstanceXML {
 		this.urlList = urlList;
 	}
 
+    public String getType() {
+        return type;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public List<LinkXML> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<LinkXML> links) {
+        this.links = links;
+    }
+
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "ApplicationVersionInstance [appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId + ", instanceName=" + instanceName +", href=" + href + "\n" ;
+
+        if (sortedDeployableList != null) {
+            for (DeployableXML deployableXML :  sortedDeployableList)    {
+                msg += deployableXML.toString(prefix + "   ") + "\n";
+            }
+        }
+
+        for (LinkXML myLink :  links)    {
+            msg += myLink.toString(prefix + "   ") + "\n";
+        }
+
+
+        msg += prefix + "]\n";
+
+
+        return msg;
+    }
 }

@@ -132,7 +132,7 @@ public class TaskManager {
             }
             List<LinkXML> links = new ArrayList<LinkXML>();
             links.add(getCancelLink(task));
-            xmlTask.setLink(links);
+            xmlTask.setLinks(links);
 
             xmlTask.setOwner(task.getOwner());
 

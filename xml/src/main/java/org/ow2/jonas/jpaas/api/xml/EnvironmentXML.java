@@ -16,46 +16,33 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "environment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentXML {
-	/**
-	 * Environment id
-	 */
-	@XmlAttribute
+
+    @XmlAttribute
+    private String type;
+
+    @XmlAttribute
+    private String href;
+
+    @XmlAttribute
 	private String envId;
 
-	/**
-	 * Environment name
-	 */
 	@XmlAttribute
 	private String envName;
 
-	/**
-	 * Environment description
-	 */
 	@XmlAttribute
 	private String envDesc;
 
-	/**
-	 * Environment State
-	 */
 	@XmlAttribute
 	private int envState;
 
-	/**
-	 * Environment topology
-	 */
 	@XmlElement
 	private TopologyXML envTopology;
 
-	/**
-	 * Environment ListApplicationVersionInstance
-	 */
-	@XmlElement
-	private List<ApplicationVersionInstanceXML> envListApplicationVersionInstanceXML;
+    @XmlElement
+    private List<LinkXML> links;
 
-	/**
-	 * Default constructor
-	 */
-	public EnvironmentXML() {
+
+    public EnvironmentXML() {
 
 	}
 
@@ -99,13 +86,49 @@ public class EnvironmentXML {
 		this.envTopology = envTopology;
 	}
 
-	public List<ApplicationVersionInstanceXML> getEnvListApplicationVersionInstance() {
-		return envListApplicationVersionInstanceXML;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setEnvListApplicationVersionInstance(
-			List<ApplicationVersionInstanceXML> envListApplicationVersionInstanceXML) {
-		this.envListApplicationVersionInstanceXML = envListApplicationVersionInstanceXML;
-	}
+    public String getHref() {
+        return href;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public List<LinkXML> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<LinkXML> links) {
+        this.links = links;
+    }
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Environment [envId=" + envId + ", envName=" + envName + ", href=" + href + "\n" ;
+
+        if (envTopology != null) {
+            msg += envTopology.toString(prefix + "   ") + "\n";
+        }
+
+        for (LinkXML myLink :  links)    {
+            msg += myLink.toString(prefix + "   ") + "\n";
+        }
+
+        msg += prefix + "]\n";
+
+
+        return msg;
+    }
+
 
 }

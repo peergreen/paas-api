@@ -17,45 +17,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeployableXML {
 
-	/**
-	 * Deployable ID
-	 */
-	@XmlAttribute
+ 	@XmlAttribute
 	private String deployableId;
 
-	/**
-	 * Deployable Name
-	 */
 	@XmlAttribute
 	private String deployableName;
 
-	/**
-	 * Deployable locationURL
-	 */
 	@XmlAttribute
 	private String locationURL;
 
-	/**
-	 * Deployable slaEnforcement
-	 */
 	@XmlAttribute
 	private String slaEnforcement;
 
-	/**
-	 * Deployable uploaded
-	 */
 	@XmlAttribute
 	private Boolean uploaded;
 
-	/**
-	 * Deployable requirements
-	 */
 	@XmlElement
 	private List<String> requirements;
 
-	/**
-	 * Default constructor
-	 */
 	public DeployableXML() {
 
 	}

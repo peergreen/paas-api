@@ -13,18 +13,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "relationship")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RelationshipXML {
-	// TODO to be defined
-	/**
-	 * RelationShip Type
-	 */
+
 	@XmlAttribute
 	private String relationShipType;
 
-  /**
-	 * Node Current size
-	 */
 	@XmlAttribute
-	private int relationShipID;
+	private int relationShipId;
 
 	/**
 	 * Default constructor
@@ -33,12 +27,12 @@ public class RelationshipXML {
 
 	}
 
-	public int getRelationShipID() {
-		return relationShipID;
+	public int getRelationShipId() {
+		return relationShipId;
 	}
 
-	public void setRelationShipID(int relationShipID) {
-		this.relationShipID = relationShipID;
+	public void setRelationShipId(int relationShipId) {
+		this.relationShipId = relationShipId;
 	}
 
   public String getRelationShipType() {
@@ -48,4 +42,15 @@ public class RelationshipXML {
   public void setRelationShipType(String relationShipType) {
     this.relationShipType = relationShipType;
   }
+
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Relationship [id=" + relationShipId + ", type=" + relationShipType + "]\n" ;
+
+        return msg;
+    }
+
 }

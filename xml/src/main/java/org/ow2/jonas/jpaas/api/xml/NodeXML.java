@@ -14,45 +14,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NodeXML {
 
-	/**
-	 * Node Current size
-	 */
-	@XmlAttribute
+    @XmlAttribute
+    private String nodeId;
+
+    @XmlAttribute
+    private String nodeName;
+
+    @XmlAttribute
+    private String nodeType;
+
+    @XmlAttribute
 	private int nodeCurrentSize;
 
-	/**
-	 * Node ID
-	 */
-	@XmlAttribute
-	private String nodeID;
-
-	/**
-	 * Node max size
-	 */
 	@XmlAttribute
 	private int nodeMaxSize;
 
-	/**
-	 * Node min size
-	 */
 	@XmlAttribute
 	private int nodeMinSize;
 
-	/**
-	 * Node Name
-	 */
-	@XmlAttribute
-	private String nodeName;
-
-  /**
-	 * Node type
-	 */
-	@XmlAttribute
-	private String nodeType;
-
-	/**
-	 * Default constructor
-	 */
 	public NodeXML() {
 
 	}
@@ -65,12 +44,12 @@ public class NodeXML {
 		this.nodeCurrentSize = nodeCurrentSize;
 	}
 
-	public String getNodeID() {
-		return nodeID;
+	public String getNodeId() {
+		return nodeId;
 	}
 
-	public void setNodeID(String nodeID) {
-		this.nodeID = nodeID;
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
 	}
 
 	public int getNodeMaxSize() {
@@ -104,5 +83,15 @@ public class NodeXML {
   public void setNodeType(String nodeType) {
     this.nodeType = nodeType;
   }
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Node [nodeID=" + nodeId + ", nodeName=" + nodeName + ", nodeType=" + nodeType +
+                ", currentSize=" + nodeCurrentSize + ", minSize=" + nodeMinSize + ", maxSize=" + nodeMaxSize + "]\n" ;
+
+        return msg;
+    }
 
 }

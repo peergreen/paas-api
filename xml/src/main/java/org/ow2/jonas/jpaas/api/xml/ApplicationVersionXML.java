@@ -8,39 +8,32 @@ import java.util.Properties;
 @XmlRootElement(name = "applicationVersion")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationVersionXML {
-	
-	/**
-	 * Application id
-	 */
+    @XmlAttribute
+    private String type;
+
+    @XmlAttribute
+    private String href;
+
 	@XmlAttribute
 	private String appId;
+
+    @XmlAttribute
+    private String versionId;
+
+    @XmlAttribute
+    private String versionLabel;
 
     @XmlElement
     private List<String> requirements;
 
-    /**
-     * ApplicationVersionInstance sortedDeployabesLis
-     */
     @XmlElement
     private List<DeployableXML> sortedDeployableList;
 
-    /**
-     * ApplicationVersionInstance capabilities
-     */
     @XmlElement
     private List<Properties> capabilities;
-	
-	/**
-	 * Application Version id
-	 */
-	@XmlAttribute
-	private String appVerId;
 
-	/**
-	 * Application Version Label
-	 */
-	@XmlAttribute
-	private String appVerLabel;
+    @XmlElement
+    private List<LinkXML> links;
 
 
     public String getAppId() {
@@ -52,20 +45,20 @@ public class ApplicationVersionXML {
     }
 
 
-    public String getAppVerId() {
-		return appVerId;
+    public String getVersionId() {
+		return versionId;
 	}
 
-	public void setAppVerId(String appVerId) {
-		this.appVerId = appVerId;
+	public void setVersionId(String versionId) {
+		this.versionId = versionId;
 	}
 
-	public String getAppVerLabel() {
-		return appVerLabel;
+	public String getVersionLabel() {
+		return versionLabel;
 	}
 
-	public void setAppVerLabel(String appVerLabel) {
-		this.appVerLabel = appVerLabel;
+	public void setVersionLabel(String versionLabel) {
+		this.versionLabel = versionLabel;
 	}
 
     public List<Properties> getCapabilities() {
@@ -93,4 +86,42 @@ public class ApplicationVersionXML {
         this.sortedDeployableList = sortedDeployableList;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public List<LinkXML> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<LinkXML> links) {
+        this.links = links;
+    }
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "ApplicationVersion [appId=" + appId + ", versionId=" + versionId + ", versionLabel=" + versionLabel +", href=" + href + "\n" ;
+
+        for (LinkXML myLink :  links)    {
+            msg += myLink.toString(prefix + "   ") + "\n";
+        }
+
+        msg += prefix + "]\n";
+
+        return msg;
+    }
 }

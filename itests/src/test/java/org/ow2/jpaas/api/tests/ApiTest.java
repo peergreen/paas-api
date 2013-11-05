@@ -189,7 +189,7 @@ public class ApiTest {
         assertFalse(versions.isEmpty());
         boolean found = false;
         for (ApplicationVersionXML version:versions) {
-            if (version.getAppVerLabel().equals(labelVersion)) {
+            if (version.getVersionLabel().equals(labelVersion)) {
                 found = true;
                 break;
             }
@@ -289,10 +289,10 @@ public class ApiTest {
         System.out.println("result = " + version);
         assertNotNull(version);
         assertEquals(version.getAppId(), appId);
-        assertEquals(version.getAppVerId(), versionId);
+        assertEquals(version.getVersionId(), versionId);
 
         if (versionLabel != null) {
-            assertEquals(version.getAppVerLabel(), versionLabel);
+            assertEquals(version.getVersionLabel(), versionLabel);
         }
 
         return version;
@@ -314,7 +314,7 @@ public class ApiTest {
         System.out.println("result = " + instance);
         assertNotNull(instance);
         assertEquals(instance.getAppId(), appId);
-        assertEquals(instance.getVersionID(), versionId);
+        assertEquals(instance.getVersionId(), versionId);
         assertEquals(instance.getInstanceId(), instanceId);
 
         if (instanceName != null) {
@@ -385,15 +385,15 @@ public class ApiTest {
         }
 
         ApplicationVersionXML versionCreated = response.readEntity(ApplicationVersionXML.class);
-        System.out.println("versionCreated = " + versionCreated.getAppVerId());
-        System.out.println("versionCreated = " + versionCreated.getAppVerLabel());
+        System.out.println("versionCreated = " + versionCreated.getVersionId());
+        System.out.println("versionCreated = " + versionCreated.getVersionLabel());
 
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             fail("Status=" + response.getStatus());
         }
 
         assertNotNull(versionCreated);
-        assertEquals(versionCreated.getAppVerLabel(), versionLabel);
+        assertEquals(versionCreated.getVersionLabel(), versionLabel);
 
         return versionCreated;
 
@@ -469,7 +469,7 @@ public class ApiTest {
             fail("Exception : " + ex);
         }
 
-        checkFindApplications(version.getAppVerLabel(),false);
+        checkFindApplications(version.getVersionLabel(),false);
 
     }
 
@@ -532,32 +532,34 @@ public class ApiTest {
         ApplicationXML appCreated = checkCreateApplication("cloud-application.xml", "testapp");
         ApplicationVersionXML versionCreated = checkCreateApplicationVersion(appCreated.getAppId(), "cloud-application-version.xml", "7.0.0-SNAPSHOT");
 
+        // Test deployable upload
         boolean foundDeployablePostgreSQLDriver=false;
         List <DeployableXML> deployables = versionCreated.getSortedDeployableList();
         for (DeployableXML deployable:deployables) {
             if (deployable.getDeployableName().equals("postgresql-8.4-703.jdbc4.jar")){
-                checkUploadDeployable(appCreated.getAppId(), versionCreated.getAppVerId(), deployable.getDeployableId(), "postgresql-8.4-703.jdbc4.jar");
+                checkUploadDeployable(appCreated.getAppId(), versionCreated.getVersionId(), deployable.getDeployableId(), "postgresql-8.4-703.jdbc4.jar");
                 foundDeployablePostgreSQLDriver=true;
                 break;
             }
         }
         assertTrue(foundDeployablePostgreSQLDriver);
 
-        ApplicationVersionInstanceXML instanceCreated = checkCreateApplicationVersionInstance(appCreated.getAppId(), versionCreated.getAppVerId(), "cloud-application-version-instance-deployment.xml", "test-for-demo");
+        // Test application version instance creation
+        ApplicationVersionInstanceXML instanceCreated = checkCreateApplicationVersionInstance(appCreated.getAppId(), versionCreated.getVersionId(), "cloud-application-version-instance-deployment.xml", "test-for-demo");
 
         // Test getters
         checkGetApplication(appCreated.getAppId(), appCreated.getAppName());
-        checkGetApplicationVersion(versionCreated.getAppId(), versionCreated.getAppVerId(), versionCreated.getAppVerLabel());
-        checkGetApplicationVersionInstance(instanceCreated.getAppId(),instanceCreated.getVersionID(),instanceCreated.getInstanceId(),instanceCreated.getInstanceName());
+        checkGetApplicationVersion(versionCreated.getAppId(), versionCreated.getVersionId(), versionCreated.getVersionLabel());
+        checkGetApplicationVersionInstance(instanceCreated.getAppId(),instanceCreated.getVersionId(),instanceCreated.getInstanceId(),instanceCreated.getInstanceName());
 
         // Test finders
         checkFindApplications(appCreated.getAppName(),true);
-        checkFindApplicationVersions(versionCreated.getAppId(), versionCreated.getAppVerLabel(), true);
-        checkFindApplicationVersionInstances(instanceCreated.getAppId(), instanceCreated.getVersionID(), instanceCreated.getInstanceName(), true);
+        checkFindApplicationVersions(versionCreated.getAppId(), versionCreated.getVersionLabel(), true);
+        checkFindApplicationVersionInstances(instanceCreated.getAppId(), instanceCreated.getVersionId(), instanceCreated.getInstanceName(), true);
 
         // Test deletes
-        checkDeleteApplicationVersionInstance(instanceCreated.getAppId(), instanceCreated.getVersionID(), instanceCreated.getInstanceId());
-        checkDeleteApplicationVersion(versionCreated.getAppId(), versionCreated.getAppVerId());
+        checkDeleteApplicationVersionInstance(instanceCreated.getAppId(), instanceCreated.getVersionId(), instanceCreated.getInstanceId());
+        checkDeleteApplicationVersion(versionCreated.getAppId(), versionCreated.getVersionId());
         checkDeleteApplication(appCreated.getAppId());
 
     }
@@ -615,6 +617,7 @@ public class ApiTest {
                         });
 
             } catch (WebApplicationException ex) {
+                ex.printStackTrace();
                 fail("Exception : " + target + ", ex=" + ex);
             }
 
@@ -632,12 +635,15 @@ public class ApiTest {
         EnvironmentXML env = null;
         try {
             target = task.getOwner().getHref();
+            System.out.println("Target = " + target);
+
             env = client.target(target)
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<EnvironmentXML>() {
                     });
 
         } catch (WebApplicationException ex) {
+            ex.printStackTrace();
             fail("Exception : " + target + ", ex=" + ex);
         }
 

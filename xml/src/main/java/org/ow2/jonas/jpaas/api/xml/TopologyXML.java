@@ -15,21 +15,12 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TopologyXML {
 
-	/**
-	 * Topology NodeList
-	 */
 	@XmlElement
 	private List<NodeXML> topoListNode;
 
-	/**
-	 * Topology RelationShipList
-	 */
 	@XmlElement
 	private List<RelationshipXML> topoRelationShipList;
 
-	/**
-	 * Default constructor
-	 */
 	public TopologyXML() {
 
 	}
@@ -50,5 +41,30 @@ public class TopologyXML {
 			List<RelationshipXML> topoRelationShipList) {
 		this.topoRelationShipList = topoRelationShipList;
 	}
+
+    public String toString() {
+        return toString("");
+    }
+    public String toString(String prefix) {
+        String msg = prefix + "Topology [topoListNode=" + topoListNode + ", topoRelationShipList=" + topoRelationShipList +"\n" ;
+
+        if (topoListNode != null) {
+         for (NodeXML nodeXML :  topoListNode)    {
+             msg += nodeXML.toString(prefix + "   ") + "\n";
+         }
+        }
+
+
+       if (topoRelationShipList != null) {
+           for (RelationshipXML relationshipXML :  topoRelationShipList)    {
+               msg += relationshipXML.toString(prefix + "   ") + "\n";
+           }
+       }
+
+        msg += prefix + "]\n";
+
+
+        return msg;
+    }
 
 }

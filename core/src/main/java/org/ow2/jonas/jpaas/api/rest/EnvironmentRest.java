@@ -136,7 +136,7 @@ public interface EnvironmentRest {
 	 * @return a list of application version instances in the environment envid
 	 */
 	@GET
-	@Path("{envId}/app/")
+	@Path("{envId}/app")
 	Response getDeployedApplicationVersionInstance(
 			@PathParam("envId") String envid);
 

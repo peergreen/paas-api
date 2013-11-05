@@ -38,17 +38,36 @@ public class Util {
      *            The {@link org.ow2.jonas.jpaas.manager.api.Application} object
      * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
-    public static ApplicationXML buildApplication(final org.ow2.jonas.jpaas.manager.api.Application app) {
+    public static ApplicationXML buildApplication(final org.ow2.jonas.jpaas.manager.api.Application app, final String baseUrl) {
         ApplicationXML xmlApp = null;
         if (app != null) {
             xmlApp = new ApplicationXML();
+            xmlApp.setType(MediaType.APPLICATION_XML);
             xmlApp.setAppId(app.getAppId());
             xmlApp.setAppName(app.getName());
+            xmlApp.setHref(getApplicationHref(baseUrl,app.getAppId()));
 
+            List<LinkXML> links = new ArrayList<LinkXML>();
+            for (ApplicationVersion version : app.getListApplicationVersion()) {
+                links.add(buildLink(LinkXML.DOWN, MediaType.APPLICATION_XML, getApplicationVersionHref(baseUrl, version.getAppId(), version.getVersionId())));
+            }
+
+            links.add(buildLink(LinkXML.ADD, MediaType.APPLICATION_XML, getApplicationHref(baseUrl, app.getAppId()) + "/version"));
+            links.add(buildLink(LinkXML.REMOVE, MediaType.APPLICATION_XML, getApplicationHref(baseUrl, app.getAppId())));
+
+            xmlApp.setLinks(links);
         }
 
         return xmlApp;
+    }
 
+    public static LinkXML buildLink(String rel, String type, String href) {
+        LinkXML linkXML = new LinkXML();
+        linkXML.setRel(rel);
+        linkXML.setType(type);
+        linkXML.setHref(href);
+
+        return linkXML;
     }
 
     /**
@@ -58,20 +77,33 @@ public class Util {
      *            The {@link org.ow2.jonas.jpaas.manager.api.Application} object
      * @return an {@link org.ow2.jonas.jpaas.manager.api.Application} XML representation
      */
-    public static ApplicationVersionXML buildApplicationVersion(final ApplicationVersion appVersion) {
+    public static ApplicationVersionXML buildApplicationVersion(final ApplicationVersion appVersion, final String baseUrl) {
 
         ApplicationVersionXML xmlVersionApp = null;
         if (appVersion != null) {
             xmlVersionApp = new ApplicationVersionXML();
-
+            xmlVersionApp.setType(MediaType.APPLICATION_XML);
+            xmlVersionApp.setHref(getApplicationVersionHref(baseUrl,appVersion.getAppId(), appVersion.getVersionId()));
             xmlVersionApp.setAppId(appVersion.getAppId());
-            xmlVersionApp.setAppVerId(appVersion.getVersionId());
-            xmlVersionApp.setAppVerLabel(appVersion.getVersionLabel());
+            xmlVersionApp.setVersionId(appVersion.getVersionId());
+            xmlVersionApp.setVersionLabel(appVersion.getVersionLabel());
             xmlVersionApp.setRequirements(appVersion.getRequirements());
             xmlVersionApp.setCapabilities(appVersion.getCapabilities());
 
             List<DeployableXML> sortedDeployableList = Util.buildSortedDeployableList(appVersion.getSortedDeployablesList());
             xmlVersionApp.setSortedDeployableList(sortedDeployableList);
+
+            List<LinkXML> links = new ArrayList<LinkXML>();
+            for (ApplicationVersionInstance instance : appVersion.getListApplicationVersionInstance()) {
+                links.add(buildLink(LinkXML.DOWN, MediaType.APPLICATION_XML, getApplicationVersionInstanceHref(baseUrl, instance.getAppId(), instance.getVersionId(), instance.getInstanceId())));
+            }
+
+            links.add(buildLink(LinkXML.UP, MediaType.APPLICATION_XML, getApplicationHref(baseUrl, appVersion.getAppId())));
+
+            links.add(buildLink(LinkXML.ADD, MediaType.APPLICATION_XML, getApplicationVersionHref(baseUrl, appVersion.getAppId(), appVersion.getVersionId()) + "/instance"));
+            links.add(buildLink(LinkXML.REMOVE, MediaType.APPLICATION_XML, getApplicationVersionHref(baseUrl, appVersion.getAppId(), appVersion.getVersionId())));
+
+            xmlVersionApp.setLinks(links);
 
         }
 
@@ -85,29 +117,47 @@ public class Util {
      * @param applicationVersionInstance
      * @return ApplicationVersionInstanceXML
      */
-    public static ApplicationVersionInstanceXML buildApplicationVersionInstance(ApplicationVersionInstance applicationVersionInstance) {
+    public static ApplicationVersionInstanceXML buildApplicationVersionInstance(ApplicationVersionInstance applicationVersionInstance, final String baseUrl) {
 
-        ApplicationVersionInstanceXML app = null;
+        ApplicationVersionInstanceXML instanceXML = null;
 
         if (applicationVersionInstance != null) {
-            app = new ApplicationVersionInstanceXML();
+            instanceXML = new ApplicationVersionInstanceXML();
+            instanceXML.setType(MediaType.APPLICATION_XML);
+            instanceXML.setHref(getApplicationVersionInstanceHref(baseUrl, applicationVersionInstance.getAppId(),applicationVersionInstance.getVersionId(),applicationVersionInstance.getInstanceId()));
+
             Map<DeployableXML, NodeXML> deployableTopologyMap = Util.buildDeployableTopologyMap(applicationVersionInstance);
             List<DeployableXML> sortedDeployableList = Util.buildSortedDeployableList(applicationVersionInstance.getSortedDeployablesList());
 
-            app.setAppId(applicationVersionInstance.getAppId());
-            app.setCapabilities(applicationVersionInstance.getCapabilities());
-            app.setDeployableTopologyMapping(deployableTopologyMap);
-            app.setInstanceId(applicationVersionInstance.getInstanceId());
-            app.setInstanceName(applicationVersionInstance.getInstanceName());
-            app.setRequirements(applicationVersionInstance.getRequirements());
-            app.setSortedDeployableList(sortedDeployableList);
-            app.setState(applicationVersionInstance.getStateStr());
-            app.setTargetEnvId(applicationVersionInstance.getTargetEnvId());
-            app.setUrlList(applicationVersionInstance.getUrlList());
-            app.setVersionID(applicationVersionInstance.getVersionId());
+            instanceXML.setAppId(applicationVersionInstance.getAppId());
+            instanceXML.setCapabilities(applicationVersionInstance.getCapabilities());
+            instanceXML.setDeployableTopologyMapping(deployableTopologyMap);
+            instanceXML.setInstanceId(applicationVersionInstance.getInstanceId());
+            instanceXML.setInstanceName(applicationVersionInstance.getInstanceName());
+            instanceXML.setRequirements(applicationVersionInstance.getRequirements());
+            instanceXML.setSortedDeployableList(sortedDeployableList);
+            instanceXML.setState(applicationVersionInstance.getStateStr());
+            instanceXML.setTargetEnvId(applicationVersionInstance.getTargetEnvId());
+            instanceXML.setUrlList(applicationVersionInstance.getUrlList());
+            instanceXML.setVersionId(applicationVersionInstance.getVersionId());
+
+            List<LinkXML> links = new ArrayList<LinkXML>();
+
+            links.add(buildLink(LinkXML.UP, MediaType.APPLICATION_XML, getApplicationHref(baseUrl, applicationVersionInstance.getAppId())));
+            links.add(buildLink(LinkXML.UP, MediaType.APPLICATION_XML, getApplicationVersionHref(baseUrl, applicationVersionInstance.getAppId(), applicationVersionInstance.getVersionId())));
+            if (applicationVersionInstance.getTargetEnvId() != null) {
+                links.add(buildLink(LinkXML.UP, MediaType.APPLICATION_XML, getEnvironmentHref(baseUrl, applicationVersionInstance.getTargetEnvId())));
+            }
+
+            links.add(buildLink(LinkXML.REMOVE, MediaType.APPLICATION_XML, getApplicationVersionInstanceHref(baseUrl, applicationVersionInstance.getAppId(), applicationVersionInstance.getVersionId(), applicationVersionInstance.getInstanceId())));
+
+            links.add(buildLink(LinkXML.ACTION, MediaType.APPLICATION_XML, getApplicationVersionInstanceHref(baseUrl, applicationVersionInstance.getAppId(), applicationVersionInstance.getVersionId(), applicationVersionInstance.getInstanceId()) + "/action/start"));
+            links.add(buildLink(LinkXML.ACTION, MediaType.APPLICATION_XML, getApplicationVersionInstanceHref(baseUrl, applicationVersionInstance.getAppId(), applicationVersionInstance.getVersionId(), applicationVersionInstance.getInstanceId()) + "/action/stop"));
+
+            instanceXML.setLinks(links);
         }
 
-        return app;
+        return instanceXML;
     }
 
 
@@ -163,47 +213,33 @@ public class Util {
      * @param env The {@link org.ow2.jonas.jpaas.manager.api.Environment} object
      * @return an {@link org.ow2.jonas.jpaas.manager.api.Environment} XML representation
      */
-    public static EnvironmentXML buildEnvironment(final org.ow2.jonas.jpaas.manager.api.Environment env) {
+    public static EnvironmentXML buildEnvironment(final org.ow2.jonas.jpaas.manager.api.Environment env, final String baseUrl) {
         EnvironmentXML xmlEnv = new EnvironmentXML();
 
         TopologyXML xmlTopo = buildTopology(env);
-        List<ApplicationVersionInstanceXML> listApplicationVersionInstanceXML = buildlistApplicationVersionInstance(env);
+
+        xmlEnv.setType(MediaType.APPLICATION_XML);
+        xmlEnv.setHref(getEnvironmentHref(baseUrl,env.getEnvId()));
 
         xmlEnv.setEnvDesc(env.getEnvDesc());
         xmlEnv.setEnvId(env.getEnvId());
-        xmlEnv.setEnvListApplicationVersionInstance(listApplicationVersionInstanceXML);
         xmlEnv.setEnvName(env.getEnvName());
         xmlEnv.setEnvState(env.getState());
         xmlEnv.setEnvTopology(xmlTopo);
 
-        return xmlEnv;
-    }
-
-    /**
-     * builds the XML representation for listApplicationVersionInstance
-     *
-     * @param env
-     * @return List<ApplicationVersionInstanceXML>
-     */
-    public static List<ApplicationVersionInstanceXML> buildlistApplicationVersionInstance(
-            org.ow2.jonas.jpaas.manager.api.Environment env) {
-        List<ApplicationVersionInstanceXML> listApplicationVersionInstanceXML = new ArrayList<ApplicationVersionInstanceXML>();
-        List<ApplicationVersionInstance> listApplicationVersionInstance = env
-                .getListApplicationVersionInstance();
-
-        if (listApplicationVersionInstance != null) {
-            for (ApplicationVersionInstance applicationVersionInstance : listApplicationVersionInstance) {
-                ApplicationVersionInstanceXML app = buildApplicationVersionInstance(applicationVersionInstance);
-                if (app != null) {
-                    listApplicationVersionInstanceXML.add(app);
-                }
-            }
+        List<LinkXML> links = new ArrayList<LinkXML>();
+        for (ApplicationVersionInstance instance : env.getListApplicationVersionInstance()) {
+            links.add(buildLink(LinkXML.DOWN, MediaType.APPLICATION_XML, getApplicationVersionInstanceHref(baseUrl, instance.getAppId(), instance.getVersionId(), instance.getInstanceId())));
         }
 
-        return listApplicationVersionInstanceXML;
+        links.add(buildLink(LinkXML.REMOVE, MediaType.APPLICATION_XML, getEnvironmentHref(baseUrl, env.getEnvId())));
+        links.add(buildLink(LinkXML.ACTION, MediaType.APPLICATION_XML, getEnvironmentHref(baseUrl, env.getEnvId() + "/action/start")));
+        links.add(buildLink(LinkXML.ACTION, MediaType.APPLICATION_XML, getEnvironmentHref(baseUrl, env.getEnvId() + "/action/stop")));
+
+        xmlEnv.setLinks(links);
+
+        return xmlEnv;
     }
-
-
 
     /**
      * builds the XML representation for SortedDeployableList
@@ -353,7 +389,7 @@ public class Util {
     public static NodeXML buildNode(Node node) {
         NodeXML nodeXML = new NodeXML();
         nodeXML.setNodeCurrentSize(node.getCurrentSize());
-        nodeXML.setNodeID(node.getId());
+        nodeXML.setNodeId(node.getId());
         nodeXML.setNodeMaxSize(node.getMaxSize());
         nodeXML.setNodeMinSize(node.getMinSize());
         nodeXML.setNodeName(node.getName());
@@ -364,6 +400,22 @@ public class Util {
         else if (node instanceof ExternalDatabase)
             nodeXML.setNodeType("Database");
         return nodeXML;
+    }
+
+    public static String getApplicationHref(String baseUrl, String appId) {
+        return baseUrl + "app/" + appId;
+    }
+
+    public static String getApplicationVersionHref(String baseUrl, String appId, String versionId) {
+        return baseUrl + "app/" + appId + "/version/" + versionId;
+    }
+
+    public static String getApplicationVersionInstanceHref(String baseUrl, String appId, String versionId, String instanceId) {
+        return baseUrl + "app/" + appId + "/version/" + versionId + "/instance/" + instanceId;
+    }
+
+    public static String getEnvironmentHref(String baseUrl, String envId) {
+        return baseUrl + "environment/" + envId;
     }
 
 

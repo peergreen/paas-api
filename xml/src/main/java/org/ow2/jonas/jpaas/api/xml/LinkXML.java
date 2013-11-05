@@ -31,6 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LinkXML {
 
+    public static final String DOWN = "down";
+    public static final String UP = "up";
+    public static final String ADD = "add";
+    public static final String REMOVE = "remove";
+    public static final String ACTION = "action";
+
+
 	@XmlAttribute
 	private String rel;
 

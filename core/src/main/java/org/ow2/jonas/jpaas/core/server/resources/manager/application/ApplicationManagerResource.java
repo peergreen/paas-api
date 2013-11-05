@@ -13,9 +13,7 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,6 +53,10 @@ public class ApplicationManagerResource implements ApplicationRest {
     private ApplicationManager appManager;
     private ErrorXML error = new ErrorXML();
 
+    @Context
+    private UriInfo uriInfo;
+
+
     public ApplicationManagerResource() {
         appManager = ApplicationManagerClient.getProxy();
     }
@@ -75,11 +77,8 @@ public class ApplicationManagerResource implements ApplicationRest {
                     .entity(error).build();
         }
 
-        // TODO add the other application attributes
         if (app != null) {
-            ApplicationXML appXML = new ApplicationXML();
-            appXML.setAppId(app.getAppId());
-            appXML.setAppName(app.getName());
+            ApplicationXML appXML = Util.buildApplication(app,uriInfo.getBaseUri().toString());
             return Response.status(Response.Status.OK)
                     .entity(new GenericEntity<ApplicationXML>(appXML) {
                     }).type(MediaType.APPLICATION_XML_TYPE).build();
@@ -109,7 +108,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         if (appVer != null) {
 
-            ApplicationVersionXML versionXML = Util.buildApplicationVersion(appVer);
+            ApplicationVersionXML versionXML = Util.buildApplicationVersion(appVer, uriInfo.getBaseUri().toString());
 
             return Response.status(Response.Status.OK)
                     .entity(new GenericEntity<ApplicationVersionXML>(versionXML) {
@@ -171,12 +170,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         // TODO add the other application attributes
         if (appVerIns != null) {
-            ApplicationVersionInstanceXML appVerInsXML = new ApplicationVersionInstanceXML();
-
-            appVerInsXML.setAppId(appVerIns.getAppId());
-            appVerInsXML.setVersionID(appVerIns.getVersionId());
-            appVerInsXML.setInstanceId(appVerIns.getInstanceId());
-            appVerInsXML.setInstanceName(appVerIns.getInstanceName());
+            ApplicationVersionInstanceXML appVerInsXML =  Util.buildApplicationVersionInstance(appVerIns,uriInfo.getBaseUri().toString());
             return Response.status(Response.Status.OK)
                     .entity(new GenericEntity<ApplicationVersionInstanceXML>(appVerInsXML) {
                     }).type(MediaType.APPLICATION_XML_TYPE).build();
@@ -201,7 +195,7 @@ public class ApplicationManagerResource implements ApplicationRest {
         List<ApplicationXML> listAppsXML = new ArrayList<ApplicationXML>();
         if (listApp != null) {
             for (org.ow2.jonas.jpaas.manager.api.Application app : listApp) {
-                ApplicationXML appXML = Util.buildApplication(app);
+                ApplicationXML appXML = Util.buildApplication(app, uriInfo.getBaseUri().toString());
                 if (appXML != null) {
                     listAppsXML.add(appXML);
                 }
@@ -221,7 +215,7 @@ public class ApplicationManagerResource implements ApplicationRest {
         List<ApplicationVersionXML> listAppVersionsXML = new ArrayList<ApplicationVersionXML>();
         if (listAppVer != null) {
             for (ApplicationVersion appVersion : listAppVer) {
-                ApplicationVersionXML appVersionXML = Util.buildApplicationVersion(appVersion);
+                ApplicationVersionXML appVersionXML = Util.buildApplicationVersion(appVersion, uriInfo.getBaseUri().toString());
                 if (appVersionXML != null) {
                     listAppVersionsXML.add(appVersionXML);
                 }
@@ -244,7 +238,7 @@ public class ApplicationManagerResource implements ApplicationRest {
         List<ApplicationVersionInstanceXML> listAppVersionInstancesXML = new ArrayList<ApplicationVersionInstanceXML>();
         if (listAppVersionInstancesXML != null) {
             for (ApplicationVersionInstance appVersionInstance : listAppVerInstances) {
-                ApplicationVersionInstanceXML appVersionInstanceXML = Util.buildApplicationVersionInstance(appVersionInstance);
+                ApplicationVersionInstanceXML appVersionInstanceXML = Util.buildApplicationVersionInstance(appVersionInstance, uriInfo.getBaseUri().toString());
                 if (appVersionInstanceXML != null) {
                     listAppVersionInstancesXML.add(appVersionInstanceXML);
                 }
@@ -270,7 +264,7 @@ public class ApplicationManagerResource implements ApplicationRest {
         }
         ApplicationVersionInstanceXML appVersionInstanceXML=null;
         try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get());
+            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
         } catch (InterruptedException | ExecutionException e) {
             error.setValue("Failed to start the Application Instance : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -295,7 +289,7 @@ public class ApplicationManagerResource implements ApplicationRest {
         }
         ApplicationVersionInstanceXML appVersionInstanceXML=null;
         try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get());
+            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
         } catch (InterruptedException | ExecutionException e) {
             error.setValue("Failed to stop the Application Instance : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -310,7 +304,7 @@ public class ApplicationManagerResource implements ApplicationRest {
     public Response describeApplication(String appId) {
         org.ow2.jonas.jpaas.manager.api.Application app = null;
         app = appManager.getApplication(appId);
-        ApplicationXML appXML = Util.buildApplication(app);
+        ApplicationXML appXML = Util.buildApplication(app, uriInfo.getBaseUri().toString());
         return Response.status(Response.Status.OK)
                 .entity(appXML).type(MediaType.APPLICATION_XML_TYPE).build();
     }
@@ -319,7 +313,7 @@ public class ApplicationManagerResource implements ApplicationRest {
     public Response describeApplicationVersion(String appId, String versionId) {
         org.ow2.jonas.jpaas.manager.api.ApplicationVersion version = null;
         version = appManager.getApplicationVersion(appId, versionId);
-        ApplicationVersionXML versionXML = Util.buildApplicationVersion(version);
+        ApplicationVersionXML versionXML = Util.buildApplicationVersion(version, uriInfo.getBaseUri().toString());
         return Response.status(Response.Status.OK)
                 .entity(versionXML).type(MediaType.APPLICATION_XML_TYPE).build();
     }
@@ -328,7 +322,7 @@ public class ApplicationManagerResource implements ApplicationRest {
     public Response describeApplicationVersionInstance(String appId, String versionId, String instanceId) {
         org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance instance = null;
         instance = appManager.getApplicationVersionInstance(appId, versionId, instanceId);
-        ApplicationVersionInstanceXML instanceXML = Util.buildApplicationVersionInstance(instance);
+        ApplicationVersionInstanceXML instanceXML = Util.buildApplicationVersionInstance(instance, uriInfo.getBaseUri().toString());
         return Response.status(Response.Status.OK)
                 .entity(instanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
     }
@@ -399,7 +393,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         ApplicationVersionInstanceXML appVersionInstanceXML=null;
         try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get());
+            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
         } catch (InterruptedException | ExecutionException e) {
             error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -433,7 +427,7 @@ public class ApplicationManagerResource implements ApplicationRest {
 
         ApplicationVersionInstanceXML appVersionInstanceXML=null;
         try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get());
+            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
         } catch (InterruptedException | ExecutionException e) {
             error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
