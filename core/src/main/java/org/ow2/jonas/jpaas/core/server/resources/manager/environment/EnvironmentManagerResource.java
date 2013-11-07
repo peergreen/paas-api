@@ -170,15 +170,15 @@ public class EnvironmentManagerResource implements EnvironmentRest {
 
         Future<Environment> env = null;
 
-        //try {
+        try {
             env = envManager.startEnvironment(envid);
-        //} catch (EnvironmentManagerBeanException e1) {
-        //    logger.error("Cannot start environment: " + e1.getMessage());
-        //    ErrorXML error = new ErrorXML();
-        //    error.setValue("Cannot start environment:" + e1);
-        //    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        //            .entity(error).build();
-        //}
+        } catch (EnvironmentManagerBeanException e1) {
+            logger.error("Cannot start environment: " + e1.getMessage());
+            ErrorXML error = new ErrorXML();
+            error.setValue("Cannot start environment:" + e1);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
 
         Task task = new StartEnvironmentTask(env, uriInfo.getBaseUri().toString());
 
@@ -197,15 +197,15 @@ public class EnvironmentManagerResource implements EnvironmentRest {
 
         Future<Environment> env = null;
 
-        //try {
-        env = envManager.stopEnvironment(envid);
-        //} catch (EnvironmentManagerBeanException e1) {
-        //    logger.error("Cannot start environment: " + e1.getMessage());
-        //    ErrorXML error = new ErrorXML();
-        //    error.setValue("Cannot start environment:" + e1);
-        //    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        //            .entity(error).build();
-        //}
+        try {
+            env = envManager.stopEnvironment(envid);
+        } catch (EnvironmentManagerBeanException e1) {
+            logger.error("Cannot start environment: " + e1.getMessage());
+            ErrorXML error = new ErrorXML();
+            error.setValue("Cannot start environment:" + e1);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(error).build();
+        }
 
         Task task = new StopEnvironmentTask(env, uriInfo.getBaseUri().toString());
 
@@ -214,63 +214,5 @@ public class EnvironmentManagerResource implements EnvironmentRest {
         return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
                 .type(MediaType.APPLICATION_XML_TYPE).build();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Response deployApplication(String envId, String appId, String versionId, String instanceId) {
-
-        logger.info("Deploy application, envId=" + envId + ", appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
-
-        Future<ApplicationVersionInstance> instance = null;
-
-        //try {
-        instance = envManager.deployApplication(envId, appId, versionId, instanceId);
-        //} catch (EnvironmentManagerBeanException e1) {
-        //    logger.error("Cannot start environment: " + e1.getMessage());
-        //    ErrorXML error = new ErrorXML();
-        //    error.setValue("Cannot start environment:" + e1);
-        //    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        //            .entity(error).build();
-        //}
-
-        Task task = new DeployOnEnvironmentTask(instance, uriInfo.getBaseUri().toString());
-
-        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
-
-        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
-                .type(MediaType.APPLICATION_XML_TYPE).build();
-
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Response undeployApplication(String envId, String appId, String versionId, String instanceId) {
-        logger.info("Undeploy application, envId=" + envId + ", appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
-
-        Future<ApplicationVersionInstance> instance = null;
-
-        //try {
-        instance = envManager.undeployApplication(envId, appId, versionId, instanceId);
-        //} catch (EnvironmentManagerBeanException e1) {
-        //    logger.error("Cannot start environment: " + e1.getMessage());
-        //    ErrorXML error = new ErrorXML();
-        //    error.setValue("Cannot start environment:" + e1);
-        //    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        //            .entity(error).build();
-        //}
-
-        Task task = new UndeployOnEnvironmentTask(instance, uriInfo.getBaseUri().toString());
-
-        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
-
-        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
-                .type(MediaType.APPLICATION_XML_TYPE).build();
-    }
-
 
 }

@@ -188,7 +188,12 @@ public class ApplicationVersionInstanceXML {
         return toString("");
     }
     public String toString(String prefix) {
-        String msg = prefix + "ApplicationVersionInstance [appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId + ", instanceName=" + instanceName +", href=" + href + "\n" ;
+        String msg = prefix + "ApplicationVersionInstance [appId=" + appId +
+                ", versionId=" + versionId +
+                ", instanceId=" + instanceId +
+                ", instanceName=" + instanceName +
+                ", state=" + state +
+                ", href=" + href + "\n" ;
 
         if (sortedDeployableList != null) {
             for (DeployableXML deployableXML :  sortedDeployableList)    {

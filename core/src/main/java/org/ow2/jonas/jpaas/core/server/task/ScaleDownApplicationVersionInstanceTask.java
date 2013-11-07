@@ -5,20 +5,19 @@ import org.ow2.jonas.jpaas.api.task.Task;
 import org.ow2.jonas.jpaas.api.xml.OwnerXML;
 import org.ow2.jonas.jpaas.core.server.resources.manager.common.Util;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
-import org.ow2.jonas.jpaas.manager.api.Environment;
 
 import javax.ws.rs.core.MediaType;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class DeployOnEnvironmentTask extends AbstractTask implements Task {
+public class ScaleDownApplicationVersionInstanceTask extends AbstractTask implements Task {
 
     private Future<ApplicationVersionInstance> instance;
 
 
-    public static final String TASK_NAME = "task:deploy-environment";
+    public static final String TASK_NAME = "task:scale-down-application";
 
-    public DeployOnEnvironmentTask(Future<ApplicationVersionInstance> instance, String baseUrl) {
+    public ScaleDownApplicationVersionInstanceTask(Future<ApplicationVersionInstance> instance, String baseUrl) {
         super(TASK_NAME, baseUrl);
         this.instance = instance;
 
@@ -31,7 +30,7 @@ public class DeployOnEnvironmentTask extends AbstractTask implements Task {
         return instance;
     }
 
-    public void seApplicationVersionInstance(Future<ApplicationVersionInstance> environment) {
+    public void setApplicationVersionInstance(Future<ApplicationVersionInstance> instance) {
         this.instance = instance;
     }
 

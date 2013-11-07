@@ -5,19 +5,20 @@ import org.ow2.jonas.jpaas.api.task.Task;
 import org.ow2.jonas.jpaas.api.xml.OwnerXML;
 import org.ow2.jonas.jpaas.core.server.resources.manager.common.Util;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
+import org.ow2.jonas.jpaas.manager.api.Environment;
 
 import javax.ws.rs.core.MediaType;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class UndeployOnEnvironmentTask extends AbstractTask implements Task {
+public class StartApplicationVersionInstanceTask extends AbstractTask implements Task {
 
     private Future<ApplicationVersionInstance> instance;
 
 
-    public static final String TASK_NAME = "task:undeploy-environment";
+    public static final String TASK_NAME = "task:start-application";
 
-    public UndeployOnEnvironmentTask(Future<ApplicationVersionInstance> instance, String baseUrl) {
+    public StartApplicationVersionInstanceTask(Future<ApplicationVersionInstance> instance, String baseUrl) {
         super(TASK_NAME, baseUrl);
         this.instance = instance;
 
@@ -30,7 +31,7 @@ public class UndeployOnEnvironmentTask extends AbstractTask implements Task {
         return instance;
     }
 
-    public void seApplicationVersionInstance(Future<ApplicationVersionInstance> environment) {
+    public void setApplicationVersionInstance(Future<ApplicationVersionInstance> instance) {
         this.instance = instance;
     }
 

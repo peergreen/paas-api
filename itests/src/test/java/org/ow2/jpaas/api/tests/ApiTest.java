@@ -524,6 +524,171 @@ public class ApiTest {
 
     }
 
+    private void checkStartApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        System.out.println("checkStartApplicationVersionInstance, appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance/" + instanceId + "/action/start")
+                    .request(MediaType.APPLICATION_XML)
+                    .post(Entity.entity("no parameters", MediaType.TEXT_PLAIN), Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        System.out.println("application started = " + response.getEntity().toString());
+
+        TaskXML task = response.readEntity(TaskXML.class);
+        System.out.println("Task = " + task);
+
+        if (response.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
+            fail("Status=" + response.getStatus());
+        }
+
+        assertNotNull(task);
+
+        boolean success = false;
+        if (task.getStatus().equals("SUCCESS")) {
+            success = true;
+        }
+
+        int retry = 2;
+        while (! success && retry < 10){
+            System.out.println("Waiting ending of start app - retry = " + retry);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            String target = null;
+            try {
+                target = BASE_URL_API + "task/" + task.getId();
+                task = client.target(target)
+                        .request(MediaType.APPLICATION_XML)
+                        .get(new GenericType<TaskXML>() {
+                        });
+
+            } catch (WebApplicationException ex) {
+                ex.printStackTrace();
+                fail("Exception : " + target + ", ex=" + ex);
+            }
+
+            System.out.println("Task[" + retry + "] = " + task);
+
+            assertNotNull(task);
+            if (task.getStatus().equals("SUCCESS")) {
+                success = true;
+            }
+            retry++;
+        }
+        assertEquals(task.getStatus(), "SUCCESS");
+
+        String target = null;
+        ApplicationVersionInstanceXML instanceStarted = null;
+        try {
+            target = task.getOwner().getHref();
+            System.out.println("Target = " + target);
+
+            instanceStarted = client.target(target)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationVersionInstanceXML>() {
+                    });
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + target + ", ex=" + ex);
+        }
+
+        System.out.println("App=" + instanceStarted);
+        assertEquals(instanceStarted.getState(),"RUNNING");
+    }
+
+    private void checkStopApplicationVersionInstance(String appId, String versionId, String instanceId) {
+        System.out.println("checkStopApplicationVersionInstance, appId=" + appId + ", versionId=" + versionId + ", instanceId=" + instanceId);
+
+        Response response = null;
+        try {
+            response = client.target(BASE_URL_API + "app/" + appId + "/version/" + versionId + "/instance/" + instanceId + "/action/stop")
+                    .request(MediaType.APPLICATION_XML)
+                    .post(Entity.entity("no parameters", MediaType.TEXT_PLAIN), Response.class);
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + ex);
+        }
+
+        System.out.println("application stopped = " + response.getEntity().toString());
+
+        TaskXML task = response.readEntity(TaskXML.class);
+        System.out.println("Task = " + task);
+
+        if (response.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
+            fail("Status=" + response.getStatus());
+        }
+
+        assertNotNull(task);
+
+        boolean success = false;
+        if (task.getStatus().equals("SUCCESS")) {
+            success = true;
+        }
+
+        int retry = 2;
+        while (! success && retry < 10){
+            System.out.println("Waiting ending of stop app - retry = " + retry);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            String target = null;
+            try {
+                target = BASE_URL_API + "task/" + task.getId();
+                task = client.target(target)
+                        .request(MediaType.APPLICATION_XML)
+                        .get(new GenericType<TaskXML>() {
+                        });
+
+            } catch (WebApplicationException ex) {
+                ex.printStackTrace();
+                fail("Exception : " + target + ", ex=" + ex);
+            }
+
+            System.out.println("Task[" + retry + "] = " + task);
+
+            assertNotNull(task);
+            if (task.getStatus().equals("SUCCESS")) {
+                success = true;
+            }
+            retry++;
+        }
+        assertEquals(task.getStatus(), "SUCCESS");
+
+        String target = null;
+        ApplicationVersionInstanceXML instanceStopped = null;
+        try {
+            target = task.getOwner().getHref();
+            System.out.println("Target = " + target);
+
+            instanceStopped = client.target(target)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<ApplicationVersionInstanceXML>() {
+                    });
+
+        } catch (WebApplicationException ex) {
+            ex.printStackTrace();
+            fail("Exception : " + target + ", ex=" + ex);
+        }
+
+        System.out.println("App=" + instanceStopped);
+        assertEquals(instanceStopped.getState(),"STOPPED");
+    }
+
+
     @Test
     public void checkApplicationLifeCycle() {
         System.out.println("checkApplicationLifeCycle ....");
@@ -546,6 +711,11 @@ public class ApiTest {
 
         // Test application version instance creation
         ApplicationVersionInstanceXML instanceCreated = checkCreateApplicationVersionInstance(appCreated.getAppId(), versionCreated.getVersionId(), "cloud-application-version-instance-deployment.xml", "test-for-demo");
+
+        // Test start / stop application version instance
+        checkStartApplicationVersionInstance(appCreated.getAppId(), versionCreated.getVersionId(), instanceCreated.getInstanceId());
+        checkStopApplicationVersionInstance(appCreated.getAppId(), versionCreated.getVersionId(), instanceCreated.getInstanceId());
+
 
         // Test getters
         checkGetApplication(appCreated.getAppId(), appCreated.getAppName());

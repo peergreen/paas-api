@@ -71,49 +71,6 @@ public interface EnvironmentRest {
 	@Path("{envId}/action/stop")
 	Response stopEnvironment(@PathParam("envId") String envid);
 
-	/**
-	 * Deploys an application instance on an available environment <br>
-	 * Command: POST
-	 * /environment/{envId}/action/deploy/app/{appId}/version/{versionId
-	 * }/instance/{instanceId}
-	 * 
-	 * @param envid
-	 *            The environment's ID.
-	 * @param appid
-	 *            The application's ID.
-	 * @param versionid
-	 *            The application's version ID.
-	 * @param instanceid
-	 *            The application's instance ID.
-	 */
-	@POST
-	@Path("{envId}/action/deploy/app/{appId}/version/{versionId}/instance/{instanceId}")
-	Response deployApplication(
-			@PathParam("envId") String envid, @PathParam("appId") String appid,
-			@PathParam("versionId") String versionid,
-			@PathParam("instanceId") String instanceid);
-
-	/**
-	 * Undeploys an application instance on an available environment <br>
-	 * Command: DELETE
-	 * /environment/{envId}/action/undeploy/app/{appId}/version/{
-	 * versionId}/instance/{instanceId}
-	 * 
-	 * @param envid
-	 *            The environment's ID.
-	 * @param appid
-	 *            The application's ID.
-	 * @param versionid
-	 *            The application's version ID.
-	 * @param instanceid
-	 *            The application's instance ID.
-	 */
-	@POST
-	@Path("{envId}/action/undeploy/app/{appId}/version/{versionId}/instance/{instanceId}")
-	Response undeployApplication(
-			@PathParam("envId") String envid, @PathParam("appId") String appid,
-			@PathParam("versionId") String versionid,
-			@PathParam("instanceId") String instanceid);
 
 	/**
 	 * Get the description of an environment <br>

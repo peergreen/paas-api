@@ -20,11 +20,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.ow2.jonas.jpaas.api.rest.ApplicationRest;
+import org.ow2.jonas.jpaas.api.task.Task;
 import org.ow2.jonas.jpaas.api.xml.*;
 import org.ow2.jonas.jpaas.application.api.ApplicationManager;
 import org.ow2.jonas.jpaas.application.api.ApplicationManagerBeanException;
 import org.ow2.jonas.jpaas.core.ejb.client.ApplicationManagerClient;
 import org.ow2.jonas.jpaas.core.server.resources.manager.common.Util;
+import org.ow2.jonas.jpaas.core.server.task.*;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersion;
 import org.ow2.jonas.jpaas.manager.api.ApplicationVersionInstance;
 import org.ow2.jonas.jpaas.manager.api.Deployable;
@@ -262,17 +264,14 @@ public class ApplicationManagerResource implements ApplicationRest {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
         }
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
-        } catch (InterruptedException | ExecutionException e) {
-            error.setValue("Failed to start the Application Instance : " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
-        }
 
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+        Task task = new StartApplicationVersionInstanceTask(instance, uriInfo.getBaseUri().toString());
+
+        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
+
+        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
+                .type(MediaType.APPLICATION_XML_TYPE).build();
+
     }
 
     @Override
@@ -287,17 +286,12 @@ public class ApplicationManagerResource implements ApplicationRest {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(error).build();
         }
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
-        } catch (InterruptedException | ExecutionException e) {
-            error.setValue("Failed to stop the Application Instance : " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
-        }
+        Task task = new StopApplicationVersionInstanceTask(instance, uriInfo.getBaseUri().toString());
 
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
+
+        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
+                .type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
     @Override
@@ -391,17 +385,12 @@ public class ApplicationManagerResource implements ApplicationRest {
             e1.printStackTrace();
         }
 
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
-        } catch (InterruptedException | ExecutionException e) {
-            error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
-        }
+        Task task = new ScaleUpApplicationVersionInstanceTask(instance, uriInfo.getBaseUri().toString());
 
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
+
+        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
+                .type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
     /**
@@ -425,17 +414,12 @@ public class ApplicationManagerResource implements ApplicationRest {
             e1.printStackTrace();
         }
 
-        ApplicationVersionInstanceXML appVersionInstanceXML=null;
-        try {
-            appVersionInstanceXML = Util.buildApplicationVersionInstance(instance.get(), uriInfo.getBaseUri().toString());
-        } catch (InterruptedException | ExecutionException e) {
-            error.setValue("Failed to scale up the Application Instance : " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(error).build();
-        }
+        Task task = new ScaleDownApplicationVersionInstanceTask(instance, uriInfo.getBaseUri().toString());
 
-        return Response.status(Response.Status.OK)
-                .entity(appVersionInstanceXML).type(MediaType.APPLICATION_XML_TYPE).build();
+        TaskXML xmlTask = TaskManager.getSingleton().buildTaskXml(task);
+
+        return Response.status(Response.Status.ACCEPTED).entity(xmlTask)
+                .type(MediaType.APPLICATION_XML_TYPE).build();
     }
 
 }
